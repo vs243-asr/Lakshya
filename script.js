@@ -1,21 +1,35 @@
-// Switch tabs
+// ========= Initialization ==========
+document.addEventListener('DOMContentLoaded', () => {
+  showDate();
+  switchTab('dashboard');
+  loadShloka();
+  loadMotivation();
+  loadJournal();
+  loadTasks();
+  loadSubjects();
+  loadNotes();
+  loadPomodoro();
+  loadProgressCharts();
+});
+
+// ========= Tab Navigation ==========
 function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
-  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-  document.getElementById(tab).classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+  document.getElementById(tab).style.display = 'block';
+  localStorage.setItem('activeTab', tab);
 }
-document.querySelectorAll('.tab-btn').forEach(b =>
-  b.addEventListener('click', () => switchTab(b.dataset.tab))
-);
 
-// Date Display
-document.getElementById('date-display').textContent = new Date().toDateString();
+// ========= Date & Day Display ==========
+function showDate() {
+  const now = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+  document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', options);
+}
 
-// Quotes
+// ========= Motivational Quotes ==========
 const quotes = [
   "Touch the sky with glory",
-  "Survival of the fittest - Darwin",
+  "Survival of the fittest – Darwin",
   "Veer Bhogya Vasundhara",
   "Sheelam Param Bhooshanam",
   "Every move must have a purpose",
@@ -24,164 +38,370 @@ const quotes = [
   "Hazaron ki bheed se ubhar ke aaunga, Mujh me kabiliyat hai mai kar ke dikhaunga",
   "If you want to rise like the Sun, first burn like the Sun."
 ];
-document.getElementById('quote-display').textContent = quotes[(new Date()).getDate() % quotes.length];
 
-// Stotra saving
-document.getElementById('stotra').value = localStorage.getItem('stotra') || '';
-document.getElementById('save-stotra').onclick = () => {
-  localStorage.setItem('stotra', document.getElementById('stotra').value);
-};
+function loadMotivation() {
+  let recent = JSON.parse(localStorage.getItem('recentQuotes') || '[]');
+  const unused = quotes.filter(q => !recent.includes(q));
+  const quote = unused[Math.floor(Math.random() * unused.length)];
+  document.getElementById('quoteBox').innerText = quote;
+  recent.push(quote);
+  if (recent.length > 10) recent.shift();
+  localStorage.setItem('recentQuotes', JSON.stringify(recent));
+}
 
-// Tasks
+// ========= Shloka Card ==========
+function loadShloka() {
+  document.getElementById('shlokaText').value = localStorage.getItem('shloka') || '';
+}
+function saveShloka() {
+  const shloka = document.getElementById('shlokaText').value;
+  localStorage.setItem('shloka', shloka);
+  alert('Shloka saved successfully!');
+}
+
+// ========= Journal Lock ==========
+function unlockJournal() {
+  const pw = prompt('Enter password to unlock journal:');
+  if (pw === 'jai bhavani') {
+    document.getElementById('journalLock').style.display = 'none';
+    document.getElementById('journalEditor').style.display = 'block';
+  } else {
+    alert('Wrong password');
+  }
+}
+function saveJournal() {
+  const content = document.getElementById('journalText').value;
+  const dateKey = new Date().toISOString().split('T')[0];
+  localStorage.setItem(`journal-${dateKey}`, content);
+  alert('Saved!');
+}
+function loadJournal() {
+  const dateKey = new Date().toISOString().split('T')[0];
+  const saved = localStorage.getItem(`journal-${dateKey}`) || '';
+  document.getElementById('journalText').value = saved;
+}
+// ========= To-Do List ==========
 function loadTasks() {
-  const tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
-  const ul = document.getElementById('task-list');
-  const doneCount = tasks.filter(t => t.done).length;
-  ul.innerHTML = '';
-  tasks.forEach((task,i) => {
+  const today = getDateKey();
+  const tasks = JSON.parse(localStorage.getItem('tasks') || '{}');
+
+  // Carry forward uncompleted tasks
+  const yesterday = getDateKey(-1);
+  if (tasks[yesterday]) {
+    const carry = tasks[yesterday].filter(t => !t.done);
+    if (!tasks[today]) tasks[today] = [];
+    carry.forEach(t => tasks[today].push({ ...t }));
+    delete tasks[yesterday];
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+
+  renderTasks();
+}
+
+function getDateKey(offset = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return d.toISOString().split('T')[0];
+}
+
+function addTask() {
+  const taskInput = document.getElementById('taskInput');
+  const taskText = taskInput.value.trim();
+  if (!taskText) return;
+  const dateKey = getDateKey();
+  const tasks = JSON.parse(localStorage.getItem('tasks') || '{}');
+  if (!tasks[dateKey]) tasks[dateKey] = [];
+  tasks[dateKey].push({ text: taskText, done: false });
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  taskInput.value = '';
+  renderTasks();
+}
+
+function toggleTask(index) {
+  const dateKey = getDateKey();
+  const tasks = JSON.parse(localStorage.getItem('tasks') || '{}');
+  tasks[dateKey][index].done = !tasks[dateKey][index].done;
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  renderTasks();
+}
+
+function renderTasks() {
+  const list = document.getElementById('taskList');
+  list.innerHTML = '';
+  const tasks = JSON.parse(localStorage.getItem('tasks') || '{}');
+  const todayTasks = tasks[getDateKey()] || [];
+  todayTasks.forEach((task, i) => {
     const li = document.createElement('li');
-    const cb = document.createElement('input'); cb.type='checkbox'; cb.checked = task.done;
-    cb.onchange = () => { tasks[i].done = cb.checked; localStorage.setItem('tasks', JSON.stringify(tasks)); updateTodayBar(); };
-    li.appendChild(cb); li.append(' ' + task.text);
-    ul.appendChild(li);
+    li.innerHTML = `<input type="checkbox" ${task.done ? 'checked' : ''} onclick="toggleTask(${i})"> ${task.text}`;
+    list.appendChild(li);
   });
-  updateTodayBar();
-  document.getElementById('week-tasks').textContent = doneCount;
-}
-document.getElementById('add-task').onclick = () => {
-  let arr = JSON.parse(localStorage.getItem('tasks') || "[]");
-  const txt = document.getElementById('task-input').value.trim();
-  if (txt) {
-    arr.push({ text: txt, done:false });
-    localStorage.setItem('tasks', JSON.stringify(arr));
-    document.getElementById('task-input').value='';
-    loadTasks();
-  }
-};
-document.getElementById('refresh-tasks').onclick = loadTasks;
-loadTasks();
-function updateTodayBar(){
-  const tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
-  const total = tasks.length, done = tasks.filter(t=>t.done).length;
-  const percent = total === 0 ? 0 : Math.floor(done/total*100);
-  document.querySelector('#today-bar .fill').style.width = percent + '%';
 }
 
-// Pomodoro
-let timerInterval, countdown=1500;
-function updateClock() {
-  const m = String(Math.floor(countdown/60)).padStart(2,'0'),
-        s = String(countdown%60).padStart(2,'0');
-  document.getElementById('timer-preview').textContent = m+':'+s;
-  document.getElementById('pomodoro-clock').textContent = m+':'+s;
-}
-function startSession(){
-  clearInterval(timerInterval);
-  const dur = parseInt(document.getElementById('session-duration').value) * 60;
-  countdown = dur;
-  const subj = document.getElementById('timer-subject').value || 'General';
-  updateClock();
-  timerInterval = setInterval(()=>{
-    countdown--;
-    updateClock();
-    if (countdown<=0){
-      clearInterval(timerInterval);
-      recordStudy(subj, dur/60);
-      alert('Session complete');
-    }
-  },1000);
-}
-document.getElementById('start-timer').onclick = startSession;
-document.getElementById('pause-timer').onclick = () => clearInterval(timerInterval);
-document.getElementById('reset-timer').onclick = ()=>{
-  clearInterval(timerInterval);
-  countdown = (parseInt(document.getElementById('session-duration').value) || 25)*60;
-  updateClock();
-};
-document.getElementById('timer-subject').append(new Option('General','General'));
-updateClock();
+// ========= Syllabus Management ==========
+function loadSubjects() {
+  const subjects = JSON.parse(localStorage.getItem('syllabus') || '{}');
+  const container = document.getElementById('subjectContainer');
+  container.innerHTML = '';
 
-// Syllabus
-function loadSyllabus(){
-  const data = JSON.parse(localStorage.getItem('syllabus') || "{}");
-  const cont = document.getElementById('subjects-container');
-  cont.innerHTML='';
-  Object.keys(data).forEach(sub=>{
-    const div = document.createElement('div'); div.className='subject-card';
-    div.innerHTML = `<h3>${sub}</h3>`;
-    data[sub].forEach(ch=>{
-      const row = document.createElement('div'); row.className='chapter-row';
-      row.innerHTML = `<strong>${ch.name}</strong>: 
-        <label><input type="checkbox"${ch.lecture? ' checked': ''}/> Lecture</label>
-        <label><input type="checkbox"${ch.notes? ' checked': ''}/> Notes</label>
-        <label><input type="checkbox"${ch.questions? ' checked': ''}/> Questions</label>
-        <label><input type="checkbox"${ch.revision? ' checked': ''}/> Revision</label>`;
-      cont.appendChild(row);
+  Object.keys(subjects).forEach(subject => {
+    const div = document.createElement('div');
+    div.className = 'subject-block';
+    div.innerHTML = `
+      <h3>${subject} <button onclick="deleteSubject('${subject}')">✖</button></h3>
+      <div class="chapter-list" id="chapters-${subject}"></div>
+      <input placeholder="Add chapter..." id="chapterInput-${subject}">
+      <button onclick="addChapter('${subject}')">Add Chapter</button>
+    `;
+    container.appendChild(div);
+
+    const chapterList = document.getElementById(`chapters-${subject}`);
+    subjects[subject].forEach((ch, i) => {
+      const chDiv = document.createElement('div');
+      chDiv.className = 'chapter-item';
+      chDiv.innerHTML = `
+        <b>${ch.name}</b>
+        <label><input type="checkbox" onchange="toggleChapter('${subject}', ${i}, 0)" ${ch.checks[0] ? 'checked' : ''}> Lecture</label>
+        <label><input type="checkbox" onchange="toggleChapter('${subject}', ${i}, 1)" ${ch.checks[1] ? 'checked' : ''}> Notes</label>
+        <label><input type="checkbox" onchange="toggleChapter('${subject}', ${i}, 2)" ${ch.checks[2] ? 'checked' : ''}> Questions</label>
+        <label><input type="checkbox" onchange="toggleChapter('${subject}', ${i}, 3)" ${ch.checks[3] ? 'checked' : ''}> Revision</label>
+        <button onclick="deleteChapter('${subject}', ${i})">Delete</button>
+      `;
+      chapterList.appendChild(chDiv);
     });
-    document.getElementById('timer-subject').append(new Option(sub, sub));
   });
 }
-document.getElementById('add-subject').onclick = ()=>{
-  const sub = document.getElementById('subject-input').value.trim();
-  if(!sub) return;
-  const data = JSON.parse(localStorage.getItem('syllabus') || "{}");
-  if(!data[sub]) data[sub] = [];
-  const ch = prompt('Enter chapter name');
-  if(ch) data[sub].push({ name: ch, lecture:false, notes:false, questions:false, revision:false });
-  localStorage.setItem('syllabus', JSON.stringify(data));
-  document.getElementById('subject-input').value='';
-  loadSyllabus();
-};
-loadSyllabus();
 
-// Journal and Quick Notes
-document.getElementById('unlock-journal').onclick = ()=>{
-  if (document.getElementById('journal-password').value === 'jai bhavani'){
-    document.getElementById('journal-text').classList.remove('hidden');
-    document.getElementById('save-journal').classList.remove('hidden');
-  } else alert('Wrong password');
-};
-document.getElementById('save-journal').onclick = ()=>{
-  localStorage.setItem('journal-'+ new Date().toDateString(), document.getElementById('journal-text').value);
-  alert('Saved journal');
-};
-document.getElementById('save-note').onclick = () => {
-  let arr = JSON.parse(localStorage.getItem('quick-notes') || "[]");
-  arr.push({ date: new Date().toDateString(), text: document.getElementById('quick-note').value});
-  localStorage.setItem('quick-notes', JSON.stringify(arr));
-  alert('Idea saved');
-};
-
-// Study Recording & Progress
-function recordStudy(subject, hours) {
-  let stats = JSON.parse(localStorage.getItem('stats') || "{}");
-  stats.totalHours = (stats.totalHours || 0) + hours;
-  const today = new Date().toDateString();
-  if (stats.lastDay !== today) {
-    stats.currentStreak = (stats.currentStreak || 0) + 1;
-    stats.lastDay = today;
-    stats.longestStreak = Math.max(stats.currentStreak, stats.longestStreak || 0);
-  }
-  stats.byDate = stats.byDate || {};
-  stats.byDate[today] = (stats.byDate[today] || 0) + hours;
-  localStorage.setItem('stats', JSON.stringify(stats));
-  renderProgress();
+function addSubject() {
+  const input = document.getElementById('subjectInput');
+  const subject = input.value.trim();
+  if (!subject) return;
+  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
+  if (!syllabus[subject]) syllabus[subject] = [];
+  localStorage.setItem('syllabus', JSON.stringify(syllabus));
+  input.value = '';
+  loadSubjects();
 }
-function renderProgress(){
-  const stats = JSON.parse(localStorage.getItem('stats') || "{}");
-  document.getElementById('goal-hours').textContent = stats.totalHours || 0;
-  document.getElementById('current-streak').textContent = stats.currentStreak || 0;
-  document.getElementById('longest-streak').textContent = stats.longestStreak || 0;
-  document.getElementById('week-hours').textContent = stats.totalHours || 0;
-  // Chart
-  const ctx = document.getElementById('daily-chart').getContext('2d');
-  new Chart(ctx, {
+
+function addChapter(subject) {
+  const input = document.getElementById(`chapterInput-${subject}`);
+  const chapter = input.value.trim();
+  if (!chapter) return;
+  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
+  syllabus[subject].push({ name: chapter, checks: [false, false, false, false] });
+  localStorage.setItem('syllabus', JSON.stringify(syllabus));
+  input.value = '';
+  loadSubjects();
+}
+
+function toggleChapter(subject, index, checkIndex) {
+  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
+  syllabus[subject][index].checks[checkIndex] = !syllabus[subject][index].checks[checkIndex];
+  localStorage.setItem('syllabus', JSON.stringify(syllabus));
+  loadSubjects();
+}
+
+function deleteSubject(subject) {
+  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
+  delete syllabus[subject];
+  localStorage.setItem('syllabus', JSON.stringify(syllabus));
+  loadSubjects();
+}
+
+function deleteChapter(subject, index) {
+  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
+  syllabus[subject].splice(index, 1);
+  localStorage.setItem('syllabus', JSON.stringify(syllabus));
+  loadSubjects();
+}
+// ========= Pomodoro Timer ==========
+let timer;
+let timerType = 'focus';
+let timeLeft = 1500; // 25 min
+let selectedSubject = '';
+let isRunning = false;
+
+function updateTimerDisplay() {
+  const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+  const sec = String(timeLeft % 60).padStart(2, '0');
+  document.getElementById('timerDisplay').innerText = `${min}:${sec}`;
+}
+
+function startTimer() {
+  const duration = parseInt(document.getElementById('focusDuration').value) || 25;
+  const breakDuration = parseInt(document.getElementById('breakDuration').value) || 5;
+  if (!selectedSubject) {
+    alert('Please select a subject before starting timer.');
+    return;
+  }
+  if (isRunning) return;
+
+  isRunning = true;
+  timeLeft = (timerType === 'focus' ? duration : breakDuration) * 60;
+  updateTimerDisplay();
+
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      isRunning = false;
+      logSession(selectedSubject, duration);
+      timerType = timerType === 'focus' ? 'break' : 'focus';
+      startTimer(); // Auto-start next session
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timer);
+  isRunning = false;
+  updateTimerDisplay();
+}
+
+function selectSubject(subject) {
+  selectedSubject = subject;
+  document.getElementById('selectedSubject').innerText = subject;
+}
+
+function logSession(subject, duration) {
+  const log = JSON.parse(localStorage.getItem('studyLog') || '{}');
+  const date = getDateKey();
+  if (!log[date]) log[date] = [];
+  log[date].push({ subject, duration, time: Date.now() });
+  localStorage.setItem('studyLog', JSON.stringify(log));
+  updateProgress();
+}
+
+// ========= Progress Tracking ==========
+function updateProgress() {
+  const log = JSON.parse(localStorage.getItem('studyLog') || '{}');
+  const date = getDateKey();
+  const todayLog = log[date] || [];
+
+  const totalMinutes = todayLog.reduce((sum, s) => sum + s.duration, 0);
+  const subjectStats = {};
+
+  todayLog.forEach(entry => {
+    subjectStats[entry.subject] = (subjectStats[entry.subject] || 0) + entry.duration;
+  });
+
+  document.getElementById('dailyHours').innerText = `${(totalMinutes / 60).toFixed(2)} hrs`;
+
+  // Update Streak
+  const streakData = JSON.parse(localStorage.getItem('streakData') || '[]');
+  const yesterday = getDateKey(-1);
+
+  if (!streakData.includes(date) && totalMinutes > 0) {
+    if (streakData[streakData.length - 1] === yesterday) {
+      streakData.push(date); // Continue streak
+    } else {
+      streakData.length = 0; // Reset streak
+      streakData.push(date);
+    }
+  }
+
+  localStorage.setItem('streakData', JSON.stringify(streakData));
+  document.getElementById('streakCurrent').innerText = streakData.length;
+  document.getElementById('streakLongest').innerText = Math.max(...getStreakLengths(streakData));
+
+  // Chart Data
+  renderCharts(log);
+  generateInsights(log);
+}
+
+function getStreakLengths(dates) {
+  let max = 0, count = 0;
+  const sorted = [...dates].sort();
+  for (let i = 1; i < sorted.length; i++) {
+    const d1 = new Date(sorted[i - 1]);
+    const d2 = new Date(sorted[i]);
+    if ((d2 - d1) / (1000 * 3600 * 24) === 1) count++;
+    else count = 1;
+    max = Math.max(max, count);
+  }
+  return [max];
+}
+
+// ========= Chart.js ==========
+let barChart;
+function renderCharts(log) {
+  const ctx = document.getElementById('dailyChart').getContext('2d');
+  const labels = [];
+  const data = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const d = getDateKey(-i);
+    labels.push(d.slice(5));
+    const total = (log[d] || []).reduce((sum, s) => sum + s.duration, 0);
+    data.push(total);
+  }
+
+  if (barChart) barChart.destroy();
+  barChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: Object.keys(stats.byDate || {}),
-      datasets: [{ label: 'Hours', data: Object.values(stats.byDate || {}), backgroundColor: '#4fc3f7' }]
+      labels,
+      datasets: [{
+        label: 'Daily Study (min)',
+        data,
+        backgroundColor: '#4fa4f7'
+      }]
     },
-    options: { scales: { y: { beginAtZero: true } } }
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } }
+    }
   });
 }
-window.onload = renderProgress;
+
+// ========= Talent Analysis ==========
+function generateInsights(log) {
+  const insights = document.getElementById('insightList');
+  insights.innerHTML = '';
+
+  const allEntries = Object.entries(log).flatMap(([date, sessions]) =>
+    sessions.map(s => ({ date, ...s }))
+  );
+
+  if (allEntries.length < 5) {
+    insights.innerHTML = '<li>Not enough data for insights.</li>';
+    return;
+  }
+
+  const timeMap = {};
+  allEntries.forEach(entry => {
+    const hour = new Date(entry.time).getHours();
+    timeMap[hour] = (timeMap[hour] || 0) + entry.duration;
+  });
+
+  const bestHour = Object.entries(timeMap).sort((a, b) => b[1] - a[1])[0][0];
+  const dayMap = {};
+  allEntries.forEach(e => {
+    const d = new Date(e.date).getDay();
+    dayMap[d] = (dayMap[d] || 0) + e.duration;
+  });
+  const bestDay = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][Object.entries(dayMap).sort((a,b)=>b[1]-a[1])[0][0]];
+
+  const msgList = [
+    `🎯 Best study hour: ${bestHour}:00`,
+    `📅 Most productive day: ${bestDay}`,
+    `⚡️ Average session: ${(allEntries.reduce((s, e) => s + e.duration, 0) / allEntries.length).toFixed(1)} mins`,
+    `💡 Tip: Try studying at ${bestHour}:00 for peak productivity.`,
+    `📌 Stay consistent to beat your longest streak!`
+  ];
+
+  msgList.forEach(msg => {
+    const li = document.createElement('li');
+    li.textContent = msg;
+    insights.appendChild(li);
+  });
+}
+
+// ========= Init ==========
+window.onload = () => {
+  loadTasks();
+  loadSubjects();
+  updateProgress();
+  updateTimerDisplay();
+  loadNotes();
+};
