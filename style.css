@@ -1,203 +1,266 @@
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Gloria+Hallelujah&family=Shadows+Into+Light&family=Patrick+Hand&display=swap');
+/* Font & Root Setup */
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
 :root {
-  --main-blue: #2c74b3;
-  --light-blue: #cbe4f9;
+  --blue1: #e0f7ff;
+  --blue2: #b3e5fc;
+  --blue3: #81d4fa;
+  --blue4: #4fc3f7;
+  --blue5: #29b6f6;
   --white: #ffffff;
-  --soft-blue: #f2f9ff;
-  --accent: #93c5fd;
-  --font-primary: 'Patrick Hand', cursive;
-  --radius: 16px;
+  --dark: #222;
+  --gray: #f1f1f1;
+  --accent: #0099cc;
+  --font: 'Patrick Hand', cursive;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font);
 }
 
 body {
-  margin: 0;
-  font-family: var(--font-primary);
-  background: var(--soft-blue);
-  color: #222;
-  padding: 0;
-  overflow-x: hidden;
+  background-color: var(--blue1);
+  color: var(--dark);
+  padding: 10px;
 }
 
-.app {
-  max-width: 900px;
-  margin: auto;
-  padding: 1rem;
+/* App Container */
+#app {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding-bottom: 50px;
 }
 
-.tabs {
+/* Header */
+header {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  background: var(--main-blue);
-  padding: 0.5rem;
-  border-radius: var(--radius);
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--blue3);
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.tabs button {
-  font-family: var(--font-primary);
-  background: var(--light-blue);
+header h1 {
+  font-size: 2em;
+  color: var(--dark);
+}
+
+#date-display {
+  font-size: 1em;
+  color: var(--dark);
+}
+
+/* Navigation */
+.tab-bar {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--blue2);
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.tab-btn {
+  flex: 1;
+  background-color: var(--blue2);
   border: none;
-  padding: 0.5rem 1rem;
-  margin: 0.3rem;
-  border-radius: 12px;
+  font-size: 1em;
+  padding: 10px;
   cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: background 0.3s;
+  border-radius: 6px;
 }
 
-.tabs button:hover {
-  background: var(--accent);
-  color: var(--white);
+.tab-btn:hover,
+.tab-btn.active {
+  background-color: var(--blue4);
+  color: white;
+  font-weight: bold;
 }
 
+/* Main Content */
 .tab-content {
   display: none;
 }
 
-.tab-content:not(.hidden) {
+.tab-content.active {
   display: block;
-  animation: fadeIn 0.4s ease-in-out;
 }
 
+/* Cards */
 .card {
-  background: var(--white);
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  padding: 1rem;
-  border-radius: var(--radius);
-  margin-bottom: 1rem;
+  background-color: var(--white);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
 }
 
-.blue-card {
-  background: var(--accent);
-  color: white;
+.card:hover {
+  transform: scale(1.01);
 }
 
-.stotra-card textarea {
-  width: 100%;
-  height: 60px;
-  margin-top: 0.5rem;
-  border-radius: var(--radius);
-  border: 1px solid #ccc;
-  padding: 0.5rem;
+.card h2 {
+  margin-bottom: 10px;
+  color: var(--accent);
 }
 
-.goal-card ul {
-  list-style: '⭐ ';
-  padding-left: 1.2rem;
-}
-
-.fire-streak p, .task-today p {
+/* Timer Preview */
+#timer-preview,
+#pomodoro-clock {
+  font-size: 2.5em;
   font-weight: bold;
-  font-size: 1.2rem;
+  text-align: center;
+  margin: 10px 0;
+  color: var(--accent);
 }
 
-input, select, textarea, button {
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  padding: 0.5rem;
-  margin: 0.2rem 0;
-  border-radius: var(--radius);
-  border: 1px solid #ccc;
+/* Inputs & Buttons */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
   width: 100%;
-  box-sizing: border-box;
+  padding: 8px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: var(--gray);
+  font-size: 1em;
+  resize: none;
 }
 
 textarea {
-  resize: vertical;
+  height: auto;
+  min-height: 80px;
 }
 
 button {
-  background: var(--main-blue);
-  color: var(--white);
-  cursor: pointer;
+  background-color: var(--blue5);
+  color: white;
   border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  margin: 5px 5px 5px 0;
+  transition: background 0.3s ease;
 }
 
 button:hover {
-  background: var(--accent);
+  background-color: var(--accent);
 }
 
-ul {
+/* Task List */
+#task-list {
   list-style-type: none;
-  padding-left: 0;
 }
 
-li {
-  background: #fff;
-  padding: 0.5rem;
-  margin-bottom: 0.3rem;
-  border: 1px dashed var(--main-blue);
-  border-radius: var(--radius);
+#task-list li {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 6px;
+  border-bottom: 1px solid #ddd;
 }
 
-li input[type="checkbox"] {
-  margin-right: 0.5rem;
+#task-list li input[type="checkbox"] {
+  margin-right: 10px;
 }
 
-.pomodoro-controls {
+/* Subject Container */
+#subjects-container {
+  margin-top: 15px;
+}
+
+.subject-card {
+  background-color: var(--blue1);
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.subject-card h3 {
+  color: var(--blue5);
+}
+
+.chapter-row {
+  margin: 10px 0;
+}
+
+.chapter-row label {
+  margin-right: 6px;
+}
+
+/* Timer Buttons */
+.timer-buttons {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  justify-content: space-between;
 }
 
-.pomodoro-display {
-  font-size: 3rem;
-  text-align: center;
-  margin: 1rem 0;
-  color: var(--main-blue);
+/* Hidden Journal */
+#journal-entry.hidden {
+  display: none;
 }
 
-#subjectChart, #syllabusProgressChart, #dailyHoursChart {
-  max-width: 100%;
-  background: var(--white);
-  padding: 1rem;
-  border-radius: var(--radius);
+/* Progress Bar */
+.progress-bar {
+  height: 20px;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
 }
 
-.syllabus-chapter {
-  background: var(--light-blue);
-  margin: 0.3rem 0;
-  padding: 0.5rem;
-  border-radius: var(--radius);
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 0%;
+  background-color: var(--blue4);
+  transition: width 0.3s ease;
 }
 
-.syllabus-subject {
-  margin-top: 1rem;
+/* Action Buttons Row */
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  margin-top: 20px;
 }
 
-.notes-card, .progress-card {
-  background: #fff;
-  border: 2px dashed #add8e6;
-  padding: 1rem;
-  border-radius: var(--radius);
+.action-row button {
+  flex: 1 1 40%;
+  margin: 8px;
 }
 
-#notesDisplay p {
-  background: #e8f1fd;
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  border-left: 4px solid var(--main-blue);
+/* Canvas Chart */
+canvas {
+  width: 100% !important;
+  height: 300px !important;
 }
 
-#journalPassword, #journalArea {
-  margin-bottom: 0.5rem;
-}
+/* Responsive */
+@media screen and (max-width: 600px) {
+  .tab-bar {
+    flex-wrap: wrap;
+  }
 
-#journalArea {
-  height: 120px;
-  width: 100%;
-}
+  .tab-btn {
+    flex: 1 1 48%;
+    margin: 4px 0;
+  }
 
-.hidden {
-  display: none !important;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  .action-row button {
+    flex: 1 1 100%;
+  }
 }
