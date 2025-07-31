@@ -1,50 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>LAKSHYA</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <script defer src="script.js"></script>
-  </head>
-  <body>
-    <div id="app">
-      <nav class="tabs">
-        <button onclick="showTab('dashboard')">Dashboard</button>
-        <button onclick="showTab('timer')">Timer</button>
-        <button onclick="showTab('tasks')">Tasks</button>
-        <button onclick="showTab('syllabus')">Syllabus</button>
-        <button onclick="showTab('notes')">Notes</button>
-        <button onclick="showTab('progress')">Progress</button>
-      </nav>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lakshya App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <header class="navbar">
+      <div class="tab" onclick="showTab('dashboard')">Dashboard</div>
+      <div class="tab" onclick="showTab('timer')">Timer</div>
+      <div class="tab" onclick="showTab('tasks')">Tasks</div>
+      <div class="tab" onclick="showTab('syllabus')">Syllabus</div>
+      <div class="tab" onclick="showTab('notes')">Notes</div>
+      <div class="tab" onclick="showTab('progress')">Progress</div>
+    </header>
 
-      <section id="dashboard" class="tab active">
-        <h2 id="quote">“You either want it, or you don’t…”</h2>
-        <div id="timerPreview">⏱️ 25:00</div>
-        <div id="taskBar">📋 Tasks Done: 0/25</div>
-        <div id="studyStats">📚 Study Hours: 0/40</div>
-        <div id="goals">
-          <h3>🎯 Goals</h3>
+    <main>
+      <!-- Dashboard -->
+      <section id="dashboard" class="tab-content">
+        <div class="card">
+          <h2>Motivational Quote</h2>
+          <p id="quoteDisplay">"You either want it, or you don’t..."</p>
+        </div>
+
+        <div class="card">
+          <h2>Pomodoro Timer</h2>
+          <div id="timerDisplay">25:00</div>
+          <div class="timer-controls">
+            <button onclick="startTimer()">Start</button>
+            <button onclick="resetTimer()">Reset</button>
+            <input type="number" id="customMinutes" min="1" placeholder="Set minutes">
+            <button onclick="setCustomTime()">Set</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Today's Tasks</h2>
+          <div class="progress-bar">
+            <div id="taskProgressBar"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>This Week's Stats</h2>
+          <p>Study Hours: <span id="weeklyHours">0</span>/40</p>
+          <p>Tasks Done: <span id="weeklyTasks">0</span>/25</p>
+        </div>
+
+        <div class="card">
+          <h2>Long-term Goals</h2>
           <ul>
             <li>Class X: 99%+</li>
-            <li>All Subjects: 100/100</li>
+            <li>100/100 in Subjects</li>
             <li>CLAT AIR 1</li>
             <li>UPSC AIR 1</li>
           </ul>
         </div>
-        <div id="actions">
-          <button>Add Task</button>
-          <button>Start Timer</button>
-          <button>Quick Note</button>
-          <button>View Progress</button>
+
+        <div class="button-bar">
+          <button onclick="showTab('tasks')">Add Task</button>
+          <button onclick="showTab('timer')">Start Timer</button>
+          <button onclick="showTab('notes')">Quick Note</button>
+          <button onclick="showTab('progress')">View Progress</button>
         </div>
       </section>
 
-      <section id="timer" class="tab">Timer tab coming soon</section>
-      <section id="tasks" class="tab">Tasks tab coming soon</section>
-      <section id="syllabus" class="tab">Syllabus tab coming soon</section>
-      <section id="notes" class="tab">Notes tab coming soon</section>
-      <section id="progress" class="tab">Progress tab coming soon</section>
-    </div>
-  </body>
+      <!-- Other tabs -->
+      <section id="timer" class="tab-content hidden">
+        <p>Timer Tab Content - Coming Soon</p>
+      </section>
+
+      <section id="tasks" class="tab-content hidden">
+        <p>Tasks Tab Content - Coming Soon</p>
+      </section>
+
+      <section id="syllabus" class="tab-content hidden">
+        <p>Syllabus Tab Content - Coming Soon</p>
+      </section>
+
+      <section id="notes" class="tab-content hidden">
+        <p>Notes Tab Content - Coming Soon</p>
+      </section>
+
+      <section id="progress" class="tab-content hidden">
+        <p>Progress Tab Content - Coming Soon</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>
