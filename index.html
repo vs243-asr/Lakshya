@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LAKSHYA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <nav class="tabs">
+        <button onclick="showTab('dashboard')">Dashboard</button>
+        <button onclick="showTab('timer')">Timer</button>
+        <button onclick="showTab('tasks')">Tasks</button>
+        <button onclick="showTab('syllabus')">Syllabus</button>
+        <button onclick="showTab('notes')">Notes</button>
+        <button onclick="showTab('progress')">Progress</button>
+      </nav>
+
+      <section id="dashboard" class="tab active">
+        <h2 id="quote">“You either want it, or you don’t…”</h2>
+        <div id="timerPreview">⏱️ 25:00</div>
+        <div id="taskBar">📋 Tasks Done: 0/25</div>
+        <div id="studyStats">📚 Study Hours: 0/40</div>
+        <div id="goals">
+          <h3>🎯 Goals</h3>
+          <ul>
+            <li>Class X: 99%+</li>
+            <li>All Subjects: 100/100</li>
+            <li>CLAT AIR 1</li>
+            <li>UPSC AIR 1</li>
+          </ul>
+        </div>
+        <div id="actions">
+          <button>Add Task</button>
+          <button>Start Timer</button>
+          <button>Quick Note</button>
+          <button>View Progress</button>
+        </div>
+      </section>
+
+      <section id="timer" class="tab">Timer tab coming soon</section>
+      <section id="tasks" class="tab">Tasks tab coming soon</section>
+      <section id="syllabus" class="tab">Syllabus tab coming soon</section>
+      <section id="notes" class="tab">Notes tab coming soon</section>
+      <section id="progress" class="tab">Progress tab coming soon</section>
+    </div>
+  </body>
+</html>
