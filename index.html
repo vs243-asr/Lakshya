@@ -2,93 +2,130 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lakshya App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lakshya</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-  <div class="app-container">
-    <header class="navbar">
-      <div class="tab" onclick="showTab('dashboard')">Dashboard</div>
-      <div class="tab" onclick="showTab('timer')">Timer</div>
-      <div class="tab" onclick="showTab('tasks')">Tasks</div>
-      <div class="tab" onclick="showTab('syllabus')">Syllabus</div>
-      <div class="tab" onclick="showTab('notes')">Notes</div>
-      <div class="tab" onclick="showTab('progress')">Progress</div>
-    </header>
+<body onload="initializeApp()">
+  <header>
+    <h1>Lakshya</h1>
+    <nav>
+      <button onclick="switchTab('dashboard')">Dashboard</button>
+      <button onclick="switchTab('timer')">Timer</button>
+      <button onclick="switchTab('tasks')">Tasks</button>
+      <button onclick="switchTab('syllabus')">Syllabus</button>
+      <button onclick="switchTab('notes')">Notes</button>
+      <button onclick="switchTab('progress')">Progress</button>
+    </nav>
+  </header>
 
-    <main>
-      <!-- Dashboard -->
-      <section id="dashboard" class="tab-content">
-        <div class="card">
-          <h2>Motivational Quote</h2>
-          <p id="quoteDisplay">"You either want it, or you don’t..."</p>
-        </div>
+  <main>
+    <!-- Dashboard Tab -->
+    <section id="dashboard" class="tab active">
+      <div class="card quote-card">
+        <h2>Daily Motivation</h2>
+        <p id="quote"></p>
+      </div>
 
-        <div class="card">
-          <h2>Pomodoro Timer</h2>
-          <div id="timerDisplay">25:00</div>
-          <div class="timer-controls">
-            <button onclick="startTimer()">Start</button>
-            <button onclick="resetTimer()">Reset</button>
-            <input type="number" id="customMinutes" min="1" placeholder="Set minutes">
-            <button onclick="setCustomTime()">Set</button>
-          </div>
-        </div>
+      <div class="card timer-preview">
+        <h3>Pomodoro Timer</h3>
+        <p id="timerStatus">25:00</p>
+        <select id="subjectSelect"></select>
+        <button onclick="startPomodoro()">Start</button>
+        <button onclick="resetPomodoro()">Reset</button>
+      </div>
 
-        <div class="card">
-          <h2>Today's Tasks</h2>
-          <div class="progress-bar">
-            <div id="taskProgressBar"></div>
-          </div>
-        </div>
+      <div class="card task-summary">
+        <h3>Today’s Task Progress</h3>
+        <progress id="taskProgress" value="0" max="100"></progress>
+      </div>
 
-        <div class="card">
-          <h2>This Week's Stats</h2>
-          <p>Study Hours: <span id="weeklyHours">0</span>/40</p>
-          <p>Tasks Done: <span id="weeklyTasks">0</span>/25</p>
-        </div>
+      <div class="card week-stats">
+        <h3>This Week</h3>
+        <p>Hours: <span id="weekHours">0</span> / <span id="weekHourLimit">40</span></p>
+        <p>Tasks: <span id="weekTasks">0</span> / <span id="weekTaskLimit">25</span></p>
+      </div>
 
-        <div class="card">
-          <h2>Long-term Goals</h2>
-          <ul>
-            <li>Class X: 99%+</li>
-            <li>100/100 in Subjects</li>
-            <li>CLAT AIR 1</li>
-            <li>UPSC AIR 1</li>
-          </ul>
-        </div>
+      <div class="card long-goals">
+        <h3>Long-term Goals</h3>
+        <ul>
+          <li>📘 Class X: 99%+</li>
+          <li>📙 100/100 in Subjects</li>
+          <li>⚖️ CLAT AIR 1</li>
+          <li>🇮🇳 UPSC AIR 1</li>
+        </ul>
+      </div>
 
-        <div class="button-bar">
-          <button onclick="showTab('tasks')">Add Task</button>
-          <button onclick="showTab('timer')">Start Timer</button>
-          <button onclick="showTab('notes')">Quick Note</button>
-          <button onclick="showTab('progress')">View Progress</button>
-        </div>
-      </section>
+      <div class="card stotra-card">
+        <h3>📜 Stotra / Shloka of the Day</h3>
+        <textarea id="stotraBox" placeholder="Paste today’s shloka here..."></textarea>
+      </div>
 
-      <!-- Other tabs -->
-      <section id="timer" class="tab-content hidden">
-        <p>Timer Tab Content - Coming Soon</p>
-      </section>
+      <div class="card streak-card">
+        <h3>🔥 Study Streak</h3>
+        <p>Current Streak: <span id="currentStreak">0</span> days</p>
+        <p>Longest Streak: <span id="longestStreak">0</span> days</p>
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616490.png" alt="fire" class="fire-icon">
+      </div>
+    </section>
 
-      <section id="tasks" class="tab-content hidden">
-        <p>Tasks Tab Content - Coming Soon</p>
-      </section>
+    <!-- Timer Tab -->
+    <section id="timer" class="tab">
+      <h2>Pomodoro Timer</h2>
+      <label>Subject: <input type="text" id="subjectInput"></label>
+      <label>Minutes: <input type="number" id="minutesInput" min="1" max="90" value="25"></label>
+      <button onclick="startPomodoro()">Start Timer</button>
+      <div id="timerDisplay">25:00</div>
+    </section>
 
-      <section id="syllabus" class="tab-content hidden">
-        <p>Syllabus Tab Content - Coming Soon</p>
-      </section>
+    <!-- Tasks Tab -->
+    <section id="tasks" class="tab">
+      <h2>📋 To-Do List</h2>
+      <input type="text" id="newTask" placeholder="Add Task..." />
+      <button onclick="addTask()">Add</button>
+      <button onclick="clearTasks()">Refresh</button>
+      <ul id="taskList"></ul>
+    </section>
 
-      <section id="notes" class="tab-content hidden">
-        <p>Notes Tab Content - Coming Soon</p>
-      </section>
+    <!-- Syllabus Tab -->
+    <section id="syllabus" class="tab">
+      <h2>📚 Subject-Wise Syllabus</h2>
+      <input type="text" id="subjectName" placeholder="Subject" />
+      <input type="text" id="chapterName" placeholder="Chapter" />
+      <button onclick="addChapter()">Add Chapter</button>
+      <div id="syllabusContainer"></div>
+    </section>
 
-      <section id="progress" class="tab-content hidden">
-        <p>Progress Tab Content - Coming Soon</p>
-      </section>
-    </main>
-  </div>
+    <!-- Notes Tab -->
+    <section id="notes" class="tab">
+      <h2>📝 Ideas and Notes</h2>
+      <textarea id="ideas" placeholder="Write your ideas here..."></textarea>
+
+      <h2>🔐 Locked Journal</h2>
+      <input type="password" id="journalPassword" placeholder="Enter Password" />
+      <button onclick="unlockJournal()">Unlock</button>
+      <textarea id="journal" placeholder="Your private journal..." disabled></textarea>
+    </section>
+
+    <!-- Progress Tab -->
+    <section id="progress" class="tab">
+      <h2>📈 Weekly Analysis</h2>
+      <p>Best Time: <span id="bestTime">--</span></p>
+      <p>Best Day: <span id="bestDay">--</span></p>
+      <p>Average Focus: <span id="avgFocus">--</span> min</p>
+
+      <div class="card goals">
+        <h3>📆 Monthly Goals</h3>
+        <p>Consistency: <span id="consistencyCount">0</span> / 30</p>
+        <p>Study Hours: <span id="monthlyHours">0</span> / 120</p>
+        <p>Tasks: <span id="monthlyTasks">0</span> / 100</p>
+      </div>
+
+      <canvas id="studyChart"></canvas>
+      <canvas id="subjectChart"></canvas>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
