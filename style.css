@@ -1,195 +1,203 @@
-/* ---------------- General ---------------- */
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Gloria+Hallelujah&family=Shadows+Into+Light&family=Patrick+Hand&display=swap');
+
+:root {
+  --main-blue: #2c74b3;
+  --light-blue: #cbe4f9;
+  --white: #ffffff;
+  --soft-blue: #f2f9ff;
+  --accent: #93c5fd;
+  --font-primary: 'Patrick Hand', cursive;
+  --radius: 16px;
+}
+
 body {
   margin: 0;
-  font-family: 'Segoe Print', 'Bradley Hand', cursive, sans-serif;
-  background: #f0f8ff;
+  font-family: var(--font-primary);
+  background: var(--soft-blue);
   color: #222;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-header {
-  background: #5390d9;
-  color: white;
+.app {
+  max-width: 900px;
+  margin: auto;
   padding: 1rem;
-  text-align: center;
-  border-bottom: 4px solid #3b6ea5;
 }
 
-h1 {
-  margin: 0;
-  font-size: 2.2rem;
-}
-
-h2 {
-  font-size: 1.6rem;
-  margin-bottom: 0.5rem;
-}
-
-h3 {
-  margin-top: 1rem;
-}
-
-/* ---------------- Navigation ---------------- */
-nav {
+.tabs {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
-  background: #cce3ff;
-  padding: 0.5rem 0;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  background: var(--main-blue);
+  padding: 0.5rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
 }
 
-nav button {
-  background: #3b6ea5;
-  color: white;
+.tabs button {
+  font-family: var(--font-primary);
+  background: var(--light-blue);
   border: none;
-  padding: 0.6rem 1rem;
-  font-weight: bold;
-  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
+  border-radius: 12px;
   cursor: pointer;
-  transition: 0.3s;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
-nav button:hover {
-  background: #265b8d;
+.tabs button:hover {
+  background: var(--accent);
+  color: var(--white);
 }
 
-/* ---------------- Tab Content ---------------- */
 .tab-content {
-  padding: 1.5rem;
-}
-
-.hidden {
   display: none;
 }
 
-/* ---------------- Cards ---------------- */
+.tab-content:not(.hidden) {
+  display: block;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
 .card {
-  background: white;
-  border: 2px dashed #88b4e7;
+  background: var(--white);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
   padding: 1rem;
-  border-radius: 15px;
+  border-radius: var(--radius);
   margin-bottom: 1rem;
-  box-shadow: 0 4px 8px rgba(83, 144, 217, 0.2);
 }
 
-/* ---------------- Timer ---------------- */
-#timerDisplay {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin: 1rem 0;
+.blue-card {
+  background: var(--accent);
+  color: white;
 }
 
-select {
-  padding: 0.4rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-/* ---------------- Streak ---------------- */
-#studyStreak {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-/* ---------------- Quotes ---------------- */
-.quote {
-  font-style: italic;
-  margin-top: 0.5rem;
-  font-size: 1.1rem;
-}
-
-/* ---------------- Shloka Box ---------------- */
-.shloka-box {
-  background: #eef6ff;
-  padding: 0.8rem;
-  border-left: 4px solid #3b6ea5;
-  margin-bottom: 1rem;
-  font-family: 'Noto Serif', serif;
-  white-space: pre-wrap;
-}
-
-/* ---------------- Syllabus ---------------- */
-.chapter {
-  border: 1px solid #c2dbf0;
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background: #ffffff;
-}
-
-.chapter label {
-  margin-right: 1rem;
-  display: inline-block;
-}
-
-/* ---------------- Tasks ---------------- */
-#taskList {
-  list-style-type: square;
-  padding-left: 1.2rem;
-  margin-top: 1rem;
-}
-
-#taskList li {
-  margin-bottom: 0.4rem;
-}
-
-/* ---------------- Inputs & Textarea ---------------- */
-input[type="text"],
-input[type="password"],
-textarea {
+.stotra-card textarea {
   width: 100%;
-  padding: 0.7rem;
-  margin: 0.5rem 0;
-  border: 1px solid #aad4ff;
-  border-radius: 10px;
+  height: 60px;
+  margin-top: 0.5rem;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
+
+.goal-card ul {
+  list-style: '⭐ ';
+  padding-left: 1.2rem;
+}
+
+.fire-streak p, .task-today p {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+input, select, textarea, button {
+  font-family: var(--font-primary);
   font-size: 1rem;
-  font-family: inherit;
-  background: #ffffff;
+  padding: 0.5rem;
+  margin: 0.2rem 0;
+  border-radius: var(--radius);
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
 }
 
 button {
-  background: #5390d9;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 10px;
-  font-weight: bold;
+  background: var(--main-blue);
+  color: var(--white);
   cursor: pointer;
-  transition: 0.3s ease;
-  margin-top: 0.5rem;
+  border: none;
 }
 
 button:hover {
-  background: #3b6ea5;
+  background: var(--accent);
 }
 
-/* ---------------- Charts ---------------- */
-canvas {
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  background: #fff;
+  padding: 0.5rem;
+  margin-bottom: 0.3rem;
+  border: 1px dashed var(--main-blue);
+  border-radius: var(--radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.pomodoro-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pomodoro-display {
+  font-size: 3rem;
+  text-align: center;
+  margin: 1rem 0;
+  color: var(--main-blue);
+}
+
+#subjectChart, #syllabusProgressChart, #dailyHoursChart {
   max-width: 100%;
+  background: var(--white);
+  padding: 1rem;
+  border-radius: var(--radius);
+}
+
+.syllabus-chapter {
+  background: var(--light-blue);
+  margin: 0.3rem 0;
+  padding: 0.5rem;
+  border-radius: var(--radius);
+}
+
+.syllabus-subject {
   margin-top: 1rem;
 }
 
-/* ---------------- Journal ---------------- */
-#journalContent textarea {
-  width: 100%;
-  height: 200px;
-  font-family: 'Segoe Print', cursive;
-  background: #fff9ef;
-  border: 2px dashed #e0c097;
+.notes-card, .progress-card {
+  background: #fff;
+  border: 2px dashed #add8e6;
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: var(--radius);
 }
 
-/* ---------------- Mobile Responsive ---------------- */
-@media (max-width: 768px) {
-  nav {
-    flex-wrap: wrap;
-  }
+#notesDisplay p {
+  background: #e8f1fd;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-left: 4px solid var(--main-blue);
+}
 
-  nav button {
-    margin: 0.2rem;
-    flex: 1 1 auto;
-  }
+#journalPassword, #journalArea {
+  margin-bottom: 0.5rem;
+}
+
+#journalArea {
+  height: 120px;
+  width: 100%;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
