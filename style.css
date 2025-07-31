@@ -1,266 +1,246 @@
-/* Font & Root Setup */
-@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
-
-:root {
-  --blue1: #e0f7ff;
-  --blue2: #b3e5fc;
-  --blue3: #81d4fa;
-  --blue4: #4fc3f7;
-  --blue5: #29b6f6;
-  --white: #ffffff;
-  --dark: #222;
-  --gray: #f1f1f1;
-  --accent: #0099cc;
-  --font: 'Patrick Hand', cursive;
-}
-
+/* ========== BASE STYLES ========== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: var(--font);
 }
 
 body {
-  background-color: var(--blue1);
-  color: var(--dark);
-  padding: 10px;
+  font-family: 'Homemade Apple', cursive;
+  background: linear-gradient(to bottom right, #dfefff, #f0f8ff);
+  color: #003366;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* App Container */
-#app {
-  max-width: 1024px;
-  margin: 0 auto;
-  padding-bottom: 50px;
-}
-
-/* Header */
 header {
+  background-color: #003366;
+  color: white;
+  padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--blue3);
-  padding: 10px 20px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 header h1 {
-  font-size: 2em;
-  color: var(--dark);
+  font-size: 2rem;
 }
 
-#date-display {
-  font-size: 1em;
-  color: var(--dark);
-}
-
-/* Navigation */
-.tab-bar {
-  display: flex;
-  justify-content: space-between;
-  background-color: var(--blue2);
-  padding: 8px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.tab-btn {
-  flex: 1;
-  background-color: var(--blue2);
-  border: none;
-  font-size: 1em;
-  padding: 10px;
-  cursor: pointer;
-  transition: background 0.3s;
-  border-radius: 6px;
-}
-
-.tab-btn:hover,
-.tab-btn.active {
-  background-color: var(--blue4);
-  color: white;
+#dateDisplay {
+  font-size: 1rem;
   font-weight: bold;
 }
 
-/* Main Content */
+/* ========== NAVIGATION ========== */
+nav {
+  display: flex;
+  justify-content: space-around;
+  background-color: #004080;
+  padding: 0.5rem 0;
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: background 0.3s;
+}
+
+nav button:hover, nav button.active {
+  background-color: #3366cc;
+  border-radius: 5px;
+}
+
+/* ========== MAIN STRUCTURE ========== */
+main {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .tab-content {
   display: none;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .tab-content.active {
-  display: block;
+  display: flex;
 }
 
-/* Cards */
+/* ========== DASHBOARD CARDS ========== */
 .card {
-  background-color: var(--white);
-  padding: 15px;
-  margin-bottom: 15px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
+  background: white;
+  padding: 1rem 1.5rem;
+  border-left: 5px solid #3399ff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
 .card:hover {
-  transform: scale(1.01);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-.card h2 {
-  margin-bottom: 10px;
-  color: var(--accent);
-}
-
-/* Timer Preview */
-#timer-preview,
-#pomodoro-clock {
-  font-size: 2.5em;
-  font-weight: bold;
-  text-align: center;
-  margin: 10px 0;
-  color: var(--accent);
-}
-
-/* Inputs & Buttons */
-input[type="text"],
-input[type="number"],
-textarea,
-select {
+.shloka-card textarea {
   width: 100%;
-  padding: 8px;
-  margin-top: 6px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background-color: var(--gray);
-  font-size: 1em;
-  resize: none;
+  height: 80px;
+  font-family: 'Homemade Apple', cursive;
+  padding: 0.5rem;
+  border: 2px dashed #6699cc;
+  border-radius: 10px;
+  background: #f6fbff;
+  resize: vertical;
 }
 
-textarea {
-  height: auto;
-  min-height: 80px;
+.timer-preview #timerPreview {
+  font-size: 2rem;
+  margin-top: 0.5rem;
+  color: #003366;
 }
 
+/* ========== BUTTON STYLES ========== */
 button {
-  background-color: var(--blue5);
+  background-color: #005cbf;
   color: white;
   border: none;
-  padding: 10px 14px;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
+  font-size: 1rem;
   border-radius: 8px;
-  font-size: 1em;
   cursor: pointer;
-  margin: 5px 5px 5px 0;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: var(--accent);
+  background-color: #003366;
 }
 
-/* Task List */
-#task-list {
-  list-style-type: none;
+/* ========== ACTION BUTTONS ========== */
+.action-buttons {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-#task-list li {
+/* ========== TIMER PAGE ========== */
+.timer-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#timerDisplay {
+  font-size: 3rem;
+  text-align: center;
+  margin-top: 1rem;
+  color: #003366;
+}
+
+/* ========== TASKS PAGE ========== */
+#taskInput {
+  width: 70%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 2px solid #003366;
+  border-radius: 5px;
+  margin-right: 0.5rem;
+  font-family: 'Homemade Apple', cursive;
+}
+
+#taskList {
+  list-style: square inside;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+
+#taskList li {
+  margin-bottom: 0.5rem;
+}
+
+/* ========== SYLLABUS PAGE ========== */
+#subjectInput {
+  width: 60%;
+  padding: 0.5rem;
+  border: 2px solid #005cbf;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: 'Homemade Apple', cursive;
+}
+
+#subjectsContainer > div {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f3f9ff;
+  border-left: 5px solid #0077cc;
+  border-radius: 10px;
+}
+
+#subjectsContainer h3 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px;
-  border-bottom: 1px solid #ddd;
 }
 
-#task-list li input[type="checkbox"] {
-  margin-right: 10px;
+#subjectsContainer input[type="checkbox"] {
+  margin-left: 10px;
 }
 
-/* Subject Container */
-#subjects-container {
-  margin-top: 15px;
+/* ========== NOTES PAGE ========== */
+#lockSection input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 60%;
+  margin-right: 1rem;
 }
 
-.subject-card {
-  background-color: var(--blue1);
-  padding: 12px;
+#dailyNote {
+  width: 100%;
+  height: 150px;
+  padding: 1rem;
+  font-size: 1rem;
   border-radius: 10px;
-  margin-bottom: 10px;
+  background-color: #fff;
+  border: 2px solid #6699cc;
+  font-family: 'Homemade Apple', cursive;
 }
 
-.subject-card h3 {
-  color: var(--blue5);
-}
-
-.chapter-row {
-  margin: 10px 0;
-}
-
-.chapter-row label {
-  margin-right: 6px;
-}
-
-/* Timer Buttons */
-.timer-buttons {
-  display: flex;
-  justify-content: space-between;
-}
-
-/* Hidden Journal */
-#journal-entry.hidden {
-  display: none;
-}
-
-/* Progress Bar */
-.progress-bar {
-  height: 20px;
-  background-color: #e0e0e0;
-  border-radius: 10px;
-  overflow: hidden;
-  position: relative;
-}
-
-.progress-bar::after {
-  content: '';
-  position: absolute;
-  height: 100%;
-  width: 0%;
-  background-color: var(--blue4);
-  transition: width 0.3s ease;
-}
-
-/* Action Buttons Row */
-.action-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  margin-top: 20px;
-}
-
-.action-row button {
-  flex: 1 1 40%;
-  margin: 8px;
-}
-
-/* Canvas Chart */
+/* ========== PROGRESS PAGE ========== */
 canvas {
-  width: 100% !important;
-  height: 300px !important;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Responsive */
-@media screen and (max-width: 600px) {
-  .tab-bar {
-    flex-wrap: wrap;
-  }
+.streaks, .monthlyGoals, .insights {
+  padding: 1rem;
+  background: #f9fafe;
+  border-left: 4px solid #66aaff;
+  border-radius: 8px;
+}
 
-  .tab-btn {
-    flex: 1 1 48%;
-    margin: 4px 0;
-  }
+#weeklyInsights {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
 
-  .action-row button {
-    flex: 1 1 100%;
-  }
+/* ========== TRANSITIONS ========== */
+.tab-content {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
