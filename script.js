@@ -23,7 +23,7 @@ function switchTab(tab) {
 function showDate() {
   const now = new Date();
   const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-  document.getElementById('currentDate').innerText = now.toLocaleDateString('en-US', options);
+  document.getElementById('dateDisplay').innerText = now.toLocaleDateString('en-US', options);
 }
 
 // ========= Motivational Quotes ==========
@@ -43,7 +43,7 @@ function loadMotivation() {
   let recent = JSON.parse(localStorage.getItem('recentQuotes') || '[]');
   const unused = quotes.filter(q => !recent.includes(q));
   const quote = unused[Math.floor(Math.random() * unused.length)];
-  document.getElementById('quoteBox').innerText = quote;
+  document.getElementById('motivationalQuote').innerText = quote;
   recent.push(quote);
   if (recent.length > 10) recent.shift();
   localStorage.setItem('recentQuotes', JSON.stringify(recent));
@@ -51,10 +51,10 @@ function loadMotivation() {
 
 // ========= Shloka Card ==========
 function loadShloka() {
-  document.getElementById('shlokaText').value = localStorage.getItem('shloka') || '';
+  document.getElementById('shlokaInput').value = localStorage.getItem('shloka') || '';
 }
 function saveShloka() {
-  const shloka = document.getElementById('shlokaText').value;
+  const shloka = document.getElementById('shlokInput').value;
   localStorage.setItem('shloka', shloka);
   alert('Shloka saved successfully!');
 }
@@ -63,14 +63,14 @@ function saveShloka() {
 function unlockJournal() {
   const pw = prompt('Enter password to unlock journal:');
   if (pw === 'jai bhavani') {
-    document.getElementById('journalLock').style.display = 'none';
-    document.getElementById('journalEditor').style.display = 'block';
+    document.getElementById('lockSection').style.display = 'none';
+    document.getElementById('journalSection').style.display = 'block';
   } else {
     alert('Wrong password');
   }
 }
 function saveJournal() {
-  const content = document.getElementById('journalText').value;
+  const content = document.getElementById('dailyNote').value;
   const dateKey = new Date().toISOString().split('T')[0];
   localStorage.setItem(`journal-${dateKey}`, content);
   alert('Saved!');
@@ -78,7 +78,7 @@ function saveJournal() {
 function loadJournal() {
   const dateKey = new Date().toISOString().split('T')[0];
   const saved = localStorage.getItem(`journal-${dateKey}`) || '';
-  document.getElementById('journalText').value = saved;
+  document.getElementById('dailyNote').value = saved;
 }
 // ========= To-Do List ==========
 function loadTasks() {
@@ -301,8 +301,8 @@ function updateProgress() {
   }
 
   localStorage.setItem('streakData', JSON.stringify(streakData));
-  document.getElementById('streakCurrent').innerText = streakData.length;
-  document.getElementById('streakLongest').innerText = Math.max(...getStreakLengths(streakData));
+  document.getElementById('currentStreak').innerText = streakData.length;
+  document.getElementById('longestStreak').innerText = Math.max(...getStreakLengths(streakData));
 
   // Chart Data
   renderCharts(log);
@@ -325,7 +325,7 @@ function getStreakLengths(dates) {
 // ========= Chart.js ==========
 let barChart;
 function renderCharts(log) {
-  const ctx = document.getElementById('dailyChart').getContext('2d');
+  const ctx = document.getElementById('studyChart').getContext('2d');
   const labels = [];
   const data = [];
 
@@ -356,7 +356,7 @@ function renderCharts(log) {
 
 // ========= Talent Analysis ==========
 function generateInsights(log) {
-  const insights = document.getElementById('insightList');
+  const insights = document.getElementById('weeklyInsight');
   insights.innerHTML = '';
 
   const allEntries = Object.entries(log).flatMap(([date, sessions]) =>
