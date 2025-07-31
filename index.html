@@ -1,21 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Lakshya</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div id="app">
     <header>
-      <h1>Lakshya-Another day, another task, another struggle, another win</h1>
+      <h1>Lakshya</h1>
       <div id="date-display"></div>
     </header>
-
-    <!-- Navigation Bar -->
     <nav class="tab-bar">
       <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
       <button class="tab-btn" data-tab="timer">Timer</button>
@@ -24,69 +21,29 @@
       <button class="tab-btn" data-tab="notes">Notes</button>
       <button class="tab-btn" data-tab="progress">Progress</button>
     </nav>
-
-    <!-- Main Content Area -->
     <main>
-      <!-- Dashboard -->
       <section class="tab-content active" id="dashboard">
-        <div class="card" id="quote-card">
-          <h2>Motivational Quote</h2>
-          <p id="quote-display"></p>
-        </div>
-
-        <div class="card" id="timer-status-card">
-          <h2>Live Pomodoro</h2>
-          <div id="timer-preview">25:00</div>
-        </div>
-
-        <div class="card">
-          <h2>Today’s Tasks</h2>
-          <div id="today-progress-bar" class="progress-bar"></div>
-        </div>
-
-        <div class="card">
-          <h2>This Week’s Stats</h2>
-          <p>Total Study Hours: <span id="week-hours">0</span></p>
-          <p>Tasks Done: <span id="week-tasks">0</span></p>
-        </div>
-
-        <div class="card">
-          <h2>Long-Term Goals</h2>
-          <ul>
-            <li>🎯 100/100</li>
-            <li>📈 99%+</li>
-            <li>🏆 AIR 1 CLAT</li>
-            <li>🏆 AIR 1 UPSC</li>
-          </ul>
-        </div>
-
-        <div class="card">
-          <h2>Stotra Card</h2>
-          <textarea id="stotra-card" rows="4" placeholder="Paste your shloka or stotra here..."></textarea>
-        </div>
-
+        <div class="card"><h2>Motivational Quote</h2><p id="quote-display"></p></div>
+        <div class="card"><h2>Live Pomodoro</h2><div id="timer-preview">25:00</div></div>
+        <div class="card"><h2>Today’s Tasks</h2><div id="today-bar" class="progress-bar"><div class="fill"></div></div></div>
+        <div class="card"><h2>This Week’s Stats</h2><p>Hours: <span id="week-hours">0</span> | Tasks done: <span id="week-tasks">0</span></p></div>
+        <div class="card"><h2>Long-Term Goals</h2><ul><li>100/100</li><li>99%+</li><li>AIR 1 CLAT</li><li>AIR 1 UPSC</li></ul></div>
+        <div class="card"><h2>Stotra</h2><textarea id="stotra" rows="4"></textarea><button id="save-stotra">Save</button></div>
         <div class="action-row">
-          <button onclick="showTab('tasks')">Add Task</button>
-          <button onclick="showTab('timer')">Start Timer</button>
-          <button onclick="showTab('notes')">Quick Note</button>
-          <button onclick="showTab('progress')">View Progress</button>
+          <button onclick="switchTab('tasks')">Add Task</button>
+          <button onclick="switchTab('timer')">Start Timer</button>
+          <button onclick="switchTab('notes')">Quick Note</button>
+          <button onclick="switchTab('progress')">View Progress</button>
         </div>
       </section>
 
-      <!-- Timer Tab -->
       <section class="tab-content" id="timer">
         <div class="card">
-          <h2>Pomodoro Timer</h2>
+          <h2>Pomodoro</h2>
           <div id="pomodoro-clock">25:00</div>
-          <div>
-            <label for="session-duration">Study (min):</label>
-            <input type="number" id="session-duration" min="1" value="25">
-            <label for="break-duration">Break (min):</label>
-            <input type="number" id="break-duration" min="1" value="5">
-          </div>
-          <select id="pomodoro-subject">
-            <option value="">Select Subject</option>
-          </select>
+          <input type="number" id="session-duration" value="25" min="1"/> min
+          <input type="number" id="break-duration" value="5" min="1"/> min
+          <select id="timer-subject"><option value="">Subject</option></select>
           <div class="timer-buttons">
             <button id="start-timer">Start</button>
             <button id="pause-timer">Pause</button>
@@ -95,79 +52,70 @@
         </div>
       </section>
 
-      <!-- Tasks Tab -->
       <section class="tab-content" id="tasks">
         <div class="card">
-          <h2>To-Do List</h2>
-          <input type="text" id="new-task-input" placeholder="Add a new task" />
+          <h2>Tasks</h2>
+          <input type="text" id="task-input" placeholder="New task"/>
           <button id="add-task">Add</button>
           <ul id="task-list"></ul>
+          <button id="refresh-tasks">Refresh</button>
         </div>
       </section>
 
-      <!-- Syllabus Tab -->
       <section class="tab-content" id="syllabus">
         <div class="card">
-          <h2>Subject-wise Syllabus</h2>
-          <input type="text" id="subject-name" placeholder="Enter Subject" />
+          <h2>Syllabus</h2>
+          <input type="text" id="subject-input" placeholder="Subject name"/>
           <button id="add-subject">Add Subject</button>
           <div id="subjects-container"></div>
         </div>
       </section>
 
-      <!-- Notes Tab -->
       <section class="tab-content" id="notes">
         <div class="card">
           <h2>Journal</h2>
-          <input type="password" id="journal-password" placeholder="Enter password to unlock" />
+          <input type="password" id="journal-password" placeholder="Password"/>
           <button id="unlock-journal">Unlock</button>
-          <div id="journal-entry" class="hidden">
-            <textarea id="journal-text" rows="10" placeholder="Write your thoughts..."></textarea>
-          </div>
+          <textarea id="journal-text" rows="8" class="hidden"></textarea>
+          <button id="save-journal" class="hidden">Save Journal</button>
         </div>
-
         <div class="card">
-          <h2>Ideas & Notes</h2>
-          <textarea id="quick-note" rows="5" placeholder="Save your ideas and notes here..."></textarea>
+          <h2>Quick Note</h2>
+          <textarea id="quick-note" rows="4"></textarea>
+          <button id="save-note">Save Note</button>
         </div>
       </section>
 
-      <!-- Progress Tab -->
       <section class="tab-content" id="progress">
         <div class="card">
-          <h2>Progress Analytics</h2>
-          <p><strong>Peak Productivity Time:</strong> <span id="peak-time">--</span></p>
-          <p><strong>Best Study Day:</strong> <span id="best-day">--</span></p>
-          <p><strong>Average Focus Duration:</strong> <span id="avg-duration">--</span> mins</p>
+          <h2>Analytics</h2>
+          <p>Peak Time: <span id="peak-time">-</span></p>
+          <p>Best Day: <span id="best-day">-</span></p>
+          <p>Avg Focus: <span id="avg-duration">-</span> mins</p>
         </div>
-
         <div class="card">
-          <h2>Study Streak</h2>
-          <p>Current Streak: <span id="current-streak">0</span> days</p>
-          <p>Longest Streak: <span id="longest-streak">0</span> days</p>
+          <h2>Streaks</h2>
+          <p>Current: <span id="current-streak">0</span></p>
+          <p>Longest: <span id="longest-streak">0</span></p>
         </div>
-
         <div class="card">
           <h2>Monthly Goals</h2>
-          <p>Study Hours: <span id="goal-hours">0</span>/<input type="number" id="max-hours" value="120" /></p>
-          <p>Tasks Completed: <span id="goal-tasks">0</span>/<input type="number" id="max-tasks" value="100" /></p>
-          <p>Consistency: <span id="goal-days">0</span>/<input type="number" id="max-days" value="30" /></p>
+          Hours: <span id="goal-hours">0</span>/<input type="number" id="max-hours" value="120"/> <br/>
+          Tasks: <span id="goal-tasks">0</span>/<input type="number" id="max-tasks" value="100"/> <br/>
+          Days: <span id="goal-days">0</span>/<input type="number" id="max-days" value="30"/>
         </div>
-
         <div class="card">
-          <h2>Progress Chart</h2>
+          <h2>Study Chart</h2>
           <canvas id="daily-chart"></canvas>
         </div>
-
         <div class="card">
-          <h2>Subject-Wise Progress</h2>
+          <h2>Subject Progress</h2>
           <div id="subject-progress"></div>
         </div>
       </section>
+
     </main>
   </div>
-
-  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>
