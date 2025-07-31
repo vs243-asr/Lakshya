@@ -14,7 +14,7 @@ const quotes = [
   "One day or day one. You decide.",
   "Clarity. Consistency. Confidence. Lakshya.",
   "Touch the sky with glory",
-  "Survival of the fittest- Darwin",
+  "Survival of the fittest - Darwin",
   "Veer Bhogya Vasundhara",
   "Sheelam Param Bhooshanam",
   "Every move must have a purpose",
@@ -47,11 +47,13 @@ function startSubjectTimer(subject) {
 }
 
 // ---------- Update Subject Chart ----------
+let chartInstance;
 function updateSubjectGraph() {
   const ctx = document.getElementById('subjectChart').getContext('2d');
   const labels = Object.keys(subjectLogs);
   const data = Object.values(subjectLogs);
-  new Chart(ctx, {
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: labels,
@@ -87,10 +89,66 @@ function saveStotra() {
   updateStotraCard();
 }
 
+// ---------- Pomodoro Timer ----------
+let timer;
+let timeLeft = 1500;
+function updateTimerDisplay() {
+  const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+  const seconds = (timeLeft % 60).toString().padStart(2, '0');
+  document.getElementById('timerDisplay').innerText = `${minutes}:${seconds}`;
+}
+function startTimer() {
+  if (timer) clearInterval(timer);
+  timer = setInterval(() => {
+    if (timeLeft > 0) {
+      timeLeft--;
+      updateTimerDisplay();
+    } else {
+      clearInterval(timer);
+      alert("Time's up!");
+    }
+  }, 1000);
+}
+function resetTimer() {
+  clearInterval(timer);
+  timeLeft = 1500;
+  updateTimerDisplay();
+}
+function setCustomTimer(minutes) {
+  timeLeft = minutes * 60;
+  updateTimerDisplay();
+}
+
+// ---------- Task Management ----------
+function addTask() {
+  const taskInput = document.getElementById("taskInput");
+  const taskList = document.getElementById("taskList");
+  const li = document.createElement("li");
+  li.innerText = taskInput.value;
+  taskList.appendChild(li);
+  taskInput.value = "";
+}
+function clearTasks() {
+  document.getElementById("taskList").innerHTML = "";
+}
+
+// ---------- Journal Lock ----------
+function unlockJournal() {
+  const password = prompt("Enter Journal Password");
+  if (password === 'jai bhavani') {
+    document.getElementById("journalContent").classList.remove("hidden");
+  } else {
+    alert("Incorrect Password");
+  }
+}
+
 // ---------- Initialization ----------
 function initializeApp() {
   showQuote();
-  updateSubjectGraph();
+  updateTimerDisplay();
   updateStotraCard();
-  updateMonthlyGoals(0, 0, 0); // initialize default
+  updateMonthlyGoals(0, 0, 0);
+  updateSubjectGraph();
 }
+
+document.addEventListener("DOMContentLoaded", initializeApp);
