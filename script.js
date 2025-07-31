@@ -1,122 +1,96 @@
-// Tab Switching
-function openTab(tabId) {
-  const tabs = document.querySelectorAll('.tab');
-  tabs.forEach(t => t.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
+// ---------- Tab Switching ----------
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+  document.getElementById(tabId).classList.remove('hidden');
 }
 
-// Timer Logic
-let timer;
-let timerSeconds = 1500;
-
-function startTimer() {
-  clearInterval(timer);
-  let timeLeft = timerSeconds;
-  const timerDisplay = document.getElementById('timerDisplay');
-
-  function update() {
-    const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-    const seconds = String(timeLeft % 60).padStart(2, '0');
-    timerDisplay.textContent = `${minutes}:${seconds}`;
-    if (timeLeft > 0) timeLeft--;
-    else clearInterval(timer);
-  }
-
-  update();
-  timer = setInterval(update, 1000);
-}
-
-// Quote Generator (no repeat for 10 days)
+// ---------- Daily Motivational Quote ----------
 const quotes = [
-  "Touch the sky with glory.",
-  "Survival of the fittest – Darwin.",
-  "Veer bhogya vasundhara.",
-  "Sheelam param bhooshanam.",
-  "Every move must have a purpose.",
-  "Without error, there is no brilliancy.",
-  "The world obeys only one law: POWER.",
-  "Padhna hai, phodna hai, kehar macha dena hai!",
-  "Aag laga deni hai.",
-  "Hazaron ki bheed se ubhar ke aaunga.",
-  "Mujhme kabiliyat hai, mai kar ke dikhaunga."
+  "Push yourself, because no one else is going to do it for you.",
+  "Dream big. Work hard. Stay focused.",
+  "Lakshya paane ke liye manzil dikhni chahiye.",
+  "Discipline is the bridge between goals and success.",
+  "Don't watch the clock; do what it does. Keep going.",
+  "One day or day one. You decide.",
+  "Clarity. Consistency. Confidence. Lakshya.",
+  "Touch the sky with glory",
+  "Survival of the fittest- Darwin",
+  "Veer Bhogya Vasundhara",
+  "Sheelam Param Bhooshanam",
+  "Every move must have a purpose",
+  "Without error there is no brilliancy",
+  "The world obeys only one law: POWER",
+  "Hazaron ki bheed se ubhar ke aaunga, Mujh me kabiliyat hai mai kar ke dikhaunga",
+  "If you want to rise like the Sun, first burn like the Sun."
 ];
-
-function getRandomQuote() {
-  let recent = JSON.parse(localStorage.getItem('recentQuotes') || '[]');
-  let available = quotes.filter(q => !recent.includes(q));
-
-  if (available.length === 0) {
-    recent = [];
-    available = [...quotes];
-  }
-
-  const quote = available[Math.floor(Math.random() * available.length)];
-  document.getElementById('quote').textContent = quote;
-  recent.push(quote);
-
-  if (recent.length > 10) recent.shift();
-  localStorage.setItem('recentQuotes', JSON.stringify(recent));
-}
-
-// Lock & Unlock Journal
-function unlockJournal() {
-  const password = document.getElementById('passwordInput').value;
-  if (password === 'jai bhavani') {
-    document.getElementById('lockedJournal').style.display = 'none';
-    document.getElementById('unlockedJournal').style.display = 'block';
-  } else {
-    alert("Wrong password. Try again.");
+function showQuote() {
+  const usedQuotes = JSON.parse(localStorage.getItem('usedQuotes') || '[]');
+  const availableQuotes = quotes.filter(q => !usedQuotes.includes(q));
+  const quote = availableQuotes.length ? availableQuotes[Math.floor(Math.random() * availableQuotes.length)] : quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById("quoteBox").innerText = quote;
+  if (!usedQuotes.includes(quote)) {
+    usedQuotes.push(quote);
+    if (usedQuotes.length >= quotes.length) usedQuotes.splice(0, usedQuotes.length - 9);
+    localStorage.setItem("usedQuotes", JSON.stringify(usedQuotes));
   }
 }
 
-// Add Quick Note
-function addQuickNote() {
-  const note = prompt("Write your note:");
-  if (note) {
-    const notes = document.getElementById('notesList');
-    const li = document.createElement('li');
-    li.textContent = note;
-    notes.appendChild(li);
+// ---------- Subject-wise Timer Log ----------
+let subjectLogs = {};
+function startSubjectTimer(subject) {
+  if (!subjectLogs[subject]) subjectLogs[subject] = 0;
+  let duration = parseInt(prompt("Enter study duration in minutes for " + subject));
+  if (!isNaN(duration)) {
+    subjectLogs[subject] += duration;
+    updateSubjectGraph();
   }
 }
 
-// Add Task
-function addTask() {
-  const task = prompt("Enter a new task:");
-  if (task) {
-    const ul = document.getElementById('taskList');
-    const li = document.createElement('li');
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.onchange = updateTaskStats;
-    li.appendChild(cb);
-    li.appendChild(document.createTextNode(" " + task));
-    ul.appendChild(li);
-    updateTaskStats();
-  }
+// ---------- Update Subject Chart ----------
+function updateSubjectGraph() {
+  const ctx = document.getElementById('subjectChart').getContext('2d');
+  const labels = Object.keys(subjectLogs);
+  const data = Object.values(subjectLogs);
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Minutes Studied',
+        data: data,
+        backgroundColor: '#5390d9'
+      }]
+    },
+    options: {
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
 }
 
-function updateTaskStats() {
-  const all = document.querySelectorAll('#taskList input');
-  const done = document.querySelectorAll('#taskList input:checked');
-  document.getElementById('taskCount').textContent = `${done.length} / ${all.length}`;
+// ---------- Monthly Goals Progress ----------
+function updateMonthlyGoals(consistency, hours, tasks) {
+  document.getElementById("monthlyConsistency").innerText = `${consistency}/30 Days`;
+  document.getElementById("monthlyHours").innerText = `${hours}/120 Hours`;
+  document.getElementById("monthlyTasks").innerText = `${tasks}/100 Tasks`;
 }
 
-// Save Stotra
+// ---------- Stotra Card Update ----------
+function updateStotraCard() {
+  const stotra = localStorage.getItem('dailyStotra') || 'Paste today\'s shloka here';
+  document.getElementById("stotraCard").innerText = stotra;
+}
 function saveStotra() {
-  const content = document.getElementById('stotraInput').value;
-  localStorage.setItem('dailyStotra', content);
-  alert("Stotra saved!");
+  const text = document.getElementById("stotraInput").value;
+  localStorage.setItem('dailyStotra', text);
+  updateStotraCard();
 }
 
-function loadStotra() {
-  document.getElementById('stotraInput').value = localStorage.getItem('dailyStotra') || "";
+// ---------- Initialization ----------
+function initializeApp() {
+  showQuote();
+  updateSubjectGraph();
+  updateStotraCard();
+  updateMonthlyGoals(0, 0, 0); // initialize default
 }
-
-// On Load
-window.onload = function () {
-  getRandomQuote();
-  loadStotra();
-  updateTaskStats();
-  startTimer();
-};
