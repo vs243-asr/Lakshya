@@ -1,94 +1,195 @@
+/* ---------------- General ---------------- */
 body {
-  font-family: 'Segoe UI', sans-serif;
   margin: 0;
+  font-family: 'Segoe Print', 'Bradley Hand', cursive, sans-serif;
   background: #f0f8ff;
-  color: #003366;
+  color: #222;
 }
 
 header {
-  background: linear-gradient(to right, #b3d9ff, #e6f2ff);
-  padding: 10px;
+  background: #5390d9;
+  color: white;
+  padding: 1rem;
   text-align: center;
+  border-bottom: 4px solid #3b6ea5;
 }
 
 h1 {
-  font-size: 2em;
   margin: 0;
-  font-weight: bold;
+  font-size: 2.2rem;
 }
 
+h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+h3 {
+  margin-top: 1rem;
+}
+
+/* ---------------- Navigation ---------------- */
 nav {
-  margin-top: 10px;
+  display: flex;
+  justify-content: space-around;
+  background: #cce3ff;
+  padding: 0.5rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 nav button {
-  margin: 5px;
-  padding: 10px 15px;
-  border: none;
-  background: #6699cc;
+  background: #3b6ea5;
   color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-weight: bold;
   border-radius: 10px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 nav button:hover {
-  background: #336699;
+  background: #265b8d;
 }
 
-main {
-  padding: 20px;
+/* ---------------- Tab Content ---------------- */
+.tab-content {
+  padding: 1.5rem;
 }
 
-.tab {
+.hidden {
   display: none;
 }
 
-.tab.active {
-  display: block;
-}
-
+/* ---------------- Cards ---------------- */
 .card {
-  background: #ffffff;
+  background: white;
+  border: 2px dashed #88b4e7;
+  padding: 1rem;
   border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  padding: 15px;
-  margin: 15px 0;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 8px rgba(83, 144, 217, 0.2);
 }
 
-textarea, input[type='text'], input[type='password'], input[type='number'] {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
+/* ---------------- Timer ---------------- */
+#timerDisplay {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+}
+
+select {
+  padding: 0.4rem;
+  font-size: 1rem;
+  border-radius: 8px;
   border: 1px solid #ccc;
+}
+
+/* ---------------- Streak ---------------- */
+#studyStreak {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* ---------------- Quotes ---------------- */
+.quote {
+  font-style: italic;
+  margin-top: 0.5rem;
+  font-size: 1.1rem;
+}
+
+/* ---------------- Shloka Box ---------------- */
+.shloka-box {
+  background: #eef6ff;
+  padding: 0.8rem;
+  border-left: 4px solid #3b6ea5;
+  margin-bottom: 1rem;
+  font-family: 'Noto Serif', serif;
+  white-space: pre-wrap;
+}
+
+/* ---------------- Syllabus ---------------- */
+.chapter {
+  border: 1px solid #c2dbf0;
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #ffffff;
+}
+
+.chapter label {
+  margin-right: 1rem;
+  display: inline-block;
+}
+
+/* ---------------- Tasks ---------------- */
+#taskList {
+  list-style-type: square;
+  padding-left: 1.2rem;
+  margin-top: 1rem;
+}
+
+#taskList li {
+  margin-bottom: 0.4rem;
+}
+
+/* ---------------- Inputs & Textarea ---------------- */
+input[type="text"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 0.7rem;
+  margin: 0.5rem 0;
+  border: 1px solid #aad4ff;
   border-radius: 10px;
-  resize: vertical;
+  font-size: 1rem;
+  font-family: inherit;
+  background: #ffffff;
 }
 
 button {
-  background: #005fa3;
+  background: #5390d9;
   color: white;
   border: none;
-  padding: 10px 15px;
+  padding: 0.6rem 1.2rem;
   border-radius: 10px;
-  margin-top: 5px;
+  font-weight: bold;
   cursor: pointer;
+  transition: 0.3s ease;
+  margin-top: 0.5rem;
 }
 
 button:hover {
-  background: #003f6b;
+  background: #3b6ea5;
 }
 
-progress {
-  width: 100%;
-  height: 20px;
-}
-
-.fire-icon {
-  width: 32px;
-  height: 32px;
-}
-
+/* ---------------- Charts ---------------- */
 canvas {
   max-width: 100%;
-  margin-top: 20px;
+  margin-top: 1rem;
+}
+
+/* ---------------- Journal ---------------- */
+#journalContent textarea {
+  width: 100%;
+  height: 200px;
+  font-family: 'Segoe Print', cursive;
+  background: #fff9ef;
+  border: 2px dashed #e0c097;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+/* ---------------- Mobile Responsive ---------------- */
+@media (max-width: 768px) {
+  nav {
+    flex-wrap: wrap;
+  }
+
+  nav button {
+    margin: 0.2rem;
+    flex: 1 1 auto;
+  }
 }
