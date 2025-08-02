@@ -1,407 +1,150 @@
-// ========= Initialization ==========
 document.addEventListener('DOMContentLoaded', () => {
-  showDate();
-  switchTab('dashboard');
-  loadShloka();
-  loadMotivation();
-  loadJournal();
-  loadTasks();
-  loadSubjects();
-  loadNotes();
-  loadPomodoro();
-  loadProgressCharts();
-});
+  // Tab logic
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+  function activate(sec) {
+    tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === sec));
+    contents.forEach(c => c.classList.toggle('active', c.id === sec));
+  }
+  tabs.forEach(b => b.addEventListener('click', () => activate(b.dataset.tab)));
+  document.querySelectorAll('.action-buttons button').forEach(btn => btn.addEventListener('click', () => activate(btn.dataset.tab)));
+  activate('dashboard');
 
-// ========= Tab Navigation ==========
-function switchTab(tab) {
-  document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-  document.getElementById(tab).style.display = 'block';
-  localStorage.setItem('activeTab', tab);
-}
+  // Date + Quote
+  const quotes = ["Touch the sky with glory","Survival of the fittest - Darwin","Veer Bhogya Vasundhara","Sheelam Param Bhooshanam","Every move must have a purpose","Without error there is no brilliancy","The world obeys only one law: POWER","Hazaron ki bheed se ubhar ke aaunga, Mujh me kabiliyat hai mai kar ke dikhaunga","If you want to rise like the Sun, first burn like the Sun."];
+  let qi = parseInt(localStorage.getItem('quoteIndex')||'0');
+  document.getElementById('motivationalQuote').innerText = quotes[qi];
+  localStorage.setItem('quoteIndex', (qi+1)%quotes.length);
+  document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString();
 
-// ========= Date & Day Display ==========
-function showDate() {
-  const now = new Date();
-  const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-  document.getElementById('dateDisplay').innerText = now.toLocaleDateString('en-US', options);
-}
-
-// ========= Motivational Quotes ==========
-const quotes = [
-  "Touch the sky with glory",
-  "Survival of the fittest – Darwin",
-  "Veer Bhogya Vasundhara",
-  "Sheelam Param Bhooshanam",
-  "Every move must have a purpose",
-  "Without error there is no brilliancy",
-  "The world obeys only one law: POWER",
-  "Hazaron ki bheed se ubhar ke aaunga, Mujh me kabiliyat hai mai kar ke dikhaunga",
-  "If you want to rise like the Sun, first burn like the Sun."
-];
-
-function loadMotivation() {
-  let recent = JSON.parse(localStorage.getItem('recentQuotes') || '[]');
-  const unused = quotes.filter(q => !recent.includes(q));
-  const quote = unused[Math.floor(Math.random() * unused.length)];
-  document.getElementById('motivationalQuote').innerText = quote;
-  recent.push(quote);
-  if (recent.length > 10) recent.shift();
-  localStorage.setItem('recentQuotes', JSON.stringify(recent));
-}
-
-// ========= Shloka Card ==========
-function loadShloka() {
+  // Shloka
+  document.getElementById('saveShlokaBtn').onclick = () => {
+    localStorage.setItem('shloka', document.getElementById('shlokaInput').value);
+    alert('Shloka saved');
+  };
   document.getElementById('shlokaInput').value = localStorage.getItem('shloka') || '';
-}
-function saveShloka() {
-  const shloka = document.getElementById('shlokInput').value;
-  localStorage.setItem('shloka', shloka);
-  alert('Shloka saved successfully!');
-}
 
-// ========= Journal Lock ==========
-function unlockJournal() {
-  const pw = prompt('Enter password to unlock journal:');
-  if (pw === 'jai bhavani') {
-    document.getElementById('lockSection').style.display = 'none';
-    document.getElementById('journalSection').style.display = 'block';
-  } else {
-    alert('Wrong password');
-  }
-}
-function saveJournal() {
-  const content = document.getElementById('dailyNote').value;
-  const dateKey = new Date().toISOString().split('T')[0];
-  localStorage.setItem(`journal-${dateKey}`, content);
-  alert('Saved!');
-}
-function loadJournal() {
-  const dateKey = new Date().toISOString().split('T')[0];
-  const saved = localStorage.getItem(`journal-${dateKey}`) || '';
-  document.getElementById('dailyNote').value = saved;
-}
-// ========= To-Do List ==========
-function loadTasks() {
-  const today = getDateKey();
-  const tasks = JSON.parse(localStorage.getItem('tasks') || '{}');
-
-  // Carry forward uncompleted tasks
-  const yesterday = getDateKey(-1);
-  if (tasks[yesterday]) {
-    const carry = tasks[yesterday].filter(t => !t.done);
-    if (!tasks[today]) tasks[today] = [];
-    carry.forEach(t => tasks[today].push({ ...t }));
-    delete tasks[yesterday];
+  // Tasks
+  function todayKey(offset=0){ let d=new Date(); d.setDate(d.getDate()+offset); return d.toISOString().split('T')[0]; }
+  function loadTasks(){
+    let tasks = JSON.parse(localStorage.getItem('tasks')||'{}');
+    let td = todayKey(), yd = todayKey(-1);
+    if(tasks[yd]){ let carry=tasks[yd].filter(t=>!t.done); tasks[td] = (tasks[td]||[]).concat(carry); delete tasks[yd]; }
     localStorage.setItem('tasks', JSON.stringify(tasks));
-  }
-
-  renderTasks();
-}
-
-function getDateKey(offset = 0) {
-  const d = new Date();
-  d.setDate(d.getDate() + offset);
-  return d.toISOString().split('T')[0];
-}
-
-function addTask() {
-  const taskInput = document.getElementById('taskInput');
-  const taskText = taskInput.value.trim();
-  if (!taskText) return;
-  const dateKey = getDateKey();
-  const tasks = JSON.parse(localStorage.getItem('tasks') || '{}');
-  if (!tasks[dateKey]) tasks[dateKey] = [];
-  tasks[dateKey].push({ text: taskText, done: false });
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-  taskInput.value = '';
-  renderTasks();
-}
-
-function toggleTask(index) {
-  const dateKey = getDateKey();
-  const tasks = JSON.parse(localStorage.getItem('tasks') || '{}');
-  tasks[dateKey][index].done = !tasks[dateKey][index].done;
-  localStorage.setItem('tasks', JSON.stringify(tasks));
-  renderTasks();
-}
-
-function renderTasks() {
-  const list = document.getElementById('taskList');
-  list.innerHTML = '';
-  const tasks = JSON.parse(localStorage.getItem('tasks') || '{}');
-  const todayTasks = tasks[getDateKey()] || [];
-  todayTasks.forEach((task, i) => {
-    const li = document.createElement('li');
-    li.innerHTML = `<input type="checkbox" ${task.done ? 'checked' : ''} onclick="toggleTask(${i})"> ${task.text}`;
-    list.appendChild(li);
-  });
-}
-
-// ========= Syllabus Management ==========
-function loadSubjects() {
-  const subjects = JSON.parse(localStorage.getItem('syllabus') || '{}');
-  const container = document.getElementById('subjectContainer');
-  container.innerHTML = '';
-
-  Object.keys(subjects).forEach(subject => {
-    const div = document.createElement('div');
-    div.className = 'subject-block';
-    div.innerHTML = `
-      <h3>${subject} <button onclick="deleteSubject('${subject}')">✖</button></h3>
-      <div class="chapter-list" id="chapters-${subject}"></div>
-      <input placeholder="Add chapter..." id="chapterInput-${subject}">
-      <button onclick="addChapter('${subject}')">Add Chapter</button>
-    `;
-    container.appendChild(div);
-
-    const chapterList = document.getElementById(`chapters-${subject}`);
-    subjects[subject].forEach((ch, i) => {
-      const chDiv = document.createElement('div');
-      chDiv.className = 'chapter-item';
-      chDiv.innerHTML = `
-        <b>${ch.name}</b>
-        <label><input type="checkbox" onchange="toggleChapter('${subject}', ${i}, 0)" ${ch.checks[0] ? 'checked' : ''}> Lecture</label>
-        <label><input type="checkbox" onchange="toggleChapter('${subject}', ${i}, 1)" ${ch.checks[1] ? 'checked' : ''}> Notes</label>
-        <label><input type="checkbox" onchange="toggleChapter('${subject}', ${i}, 2)" ${ch.checks[2] ? 'checked' : ''}> Questions</label>
-        <label><input type="checkbox" onchange="toggleChapter('${subject}', ${i}, 3)" ${ch.checks[3] ? 'checked' : ''}> Revision</label>
-        <button onclick="deleteChapter('${subject}', ${i})">Delete</button>
-      `;
-      chapterList.appendChild(chDiv);
+    let list=document.getElementById('taskList'); list.innerHTML='';
+    (tasks[td]||[]).forEach((t,i)=>{
+      let li=document.createElement('li');
+      li.innerHTML = `<input type="checkbox" ${t.done?'checked':''} onclick="toggleTask(${i})"> ${t.text}`;
+      list.appendChild(li);
     });
-  });
-}
-
-function addSubject() {
-  const input = document.getElementById('subjectInput');
-  const subject = input.value.trim();
-  if (!subject) return;
-  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
-  if (!syllabus[subject]) syllabus[subject] = [];
-  localStorage.setItem('syllabus', JSON.stringify(syllabus));
-  input.value = '';
-  loadSubjects();
-}
-
-function addChapter(subject) {
-  const input = document.getElementById(`chapterInput-${subject}`);
-  const chapter = input.value.trim();
-  if (!chapter) return;
-  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
-  syllabus[subject].push({ name: chapter, checks: [false, false, false, false] });
-  localStorage.setItem('syllabus', JSON.stringify(syllabus));
-  input.value = '';
-  loadSubjects();
-}
-
-function toggleChapter(subject, index, checkIndex) {
-  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
-  syllabus[subject][index].checks[checkIndex] = !syllabus[subject][index].checks[checkIndex];
-  localStorage.setItem('syllabus', JSON.stringify(syllabus));
-  loadSubjects();
-}
-
-function deleteSubject(subject) {
-  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
-  delete syllabus[subject];
-  localStorage.setItem('syllabus', JSON.stringify(syllabus));
-  loadSubjects();
-}
-
-function deleteChapter(subject, index) {
-  const syllabus = JSON.parse(localStorage.getItem('syllabus') || '{}');
-  syllabus[subject].splice(index, 1);
-  localStorage.setItem('syllabus', JSON.stringify(syllabus));
-  loadSubjects();
-}
-// ========= Pomodoro Timer ==========
-let timer;
-let timerType = 'focus';
-let timeLeft = 1500; // 25 min
-let selectedSubject = '';
-let isRunning = false;
-
-function updateTimerDisplay() {
-  const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-  const sec = String(timeLeft % 60).padStart(2, '0');
-  document.getElementById('timerDisplay').innerText = `${min}:${sec}`;
-}
-
-function startTimer() {
-  const duration = parseInt(document.getElementById('focusDuration').value) || 25;
-  const breakDuration = parseInt(document.getElementById('breakDuration').value) || 5;
-  if (!selectedSubject) {
-    alert('Please select a subject before starting timer.');
-    return;
+    updateTaskProgress(tasks[td]||[]);
   }
-  if (isRunning) return;
-
-  isRunning = true;
-  timeLeft = (timerType === 'focus' ? duration : breakDuration) * 60;
-  updateTimerDisplay();
-
-  timer = setInterval(() => {
-    timeLeft--;
-    updateTimerDisplay();
-    if (timeLeft <= 0) {
-      clearInterval(timer);
-      isRunning = false;
-      logSession(selectedSubject, duration);
-      timerType = timerType === 'focus' ? 'break' : 'focus';
-      startTimer(); // Auto-start next session
-    }
-  }, 1000);
-}
-
-function stopTimer() {
-  clearInterval(timer);
-  isRunning = false;
-  updateTimerDisplay();
-}
-
-function selectSubject(subject) {
-  selectedSubject = subject;
-  document.getElementById('selectedSubject').innerText = subject;
-}
-
-function logSession(subject, duration) {
-  const log = JSON.parse(localStorage.getItem('studyLog') || '{}');
-  const date = getDateKey();
-  if (!log[date]) log[date] = [];
-  log[date].push({ subject, duration, time: Date.now() });
-  localStorage.setItem('studyLog', JSON.stringify(log));
-  updateProgress();
-}
-
-// ========= Progress Tracking ==========
-function updateProgress() {
-  const log = JSON.parse(localStorage.getItem('studyLog') || '{}');
-  const date = getDateKey();
-  const todayLog = log[date] || [];
-
-  const totalMinutes = todayLog.reduce((sum, s) => sum + s.duration, 0);
-  const subjectStats = {};
-
-  todayLog.forEach(entry => {
-    subjectStats[entry.subject] = (subjectStats[entry.subject] || 0) + entry.duration;
-  });
-
-  document.getElementById('dailyHours').innerText = `${(totalMinutes / 60).toFixed(2)} hrs`;
-
-  // Update Streak
-  const streakData = JSON.parse(localStorage.getItem('streakData') || '[]');
-  const yesterday = getDateKey(-1);
-
-  if (!streakData.includes(date) && totalMinutes > 0) {
-    if (streakData[streakData.length - 1] === yesterday) {
-      streakData.push(date); // Continue streak
-    } else {
-      streakData.length = 0; // Reset streak
-      streakData.push(date);
-    }
+  window.toggleTask = (i)=>{
+    let tasks=JSON.parse(localStorage.getItem('tasks')||'{}'), td=todayKey();
+    tasks[td][i].done = !tasks[td][i].done;
+    localStorage.setItem('tasks', JSON.stringify(tasks)); loadTasks();
   }
-
-  localStorage.setItem('streakData', JSON.stringify(streakData));
-  document.getElementById('currentStreak').innerText = streakData.length;
-  document.getElementById('longestStreak').innerText = Math.max(...getStreakLengths(streakData));
-
-  // Chart Data
-  renderCharts(log);
-  generateInsights(log);
-}
-
-function getStreakLengths(dates) {
-  let max = 0, count = 0;
-  const sorted = [...dates].sort();
-  for (let i = 1; i < sorted.length; i++) {
-    const d1 = new Date(sorted[i - 1]);
-    const d2 = new Date(sorted[i]);
-    if ((d2 - d1) / (1000 * 3600 * 24) === 1) count++;
-    else count = 1;
-    max = Math.max(max, count);
+  document.getElementById('addTaskBtn').onclick = () => {
+    let ti=document.getElementById('taskInput'), txt=ti.value.trim();
+    if(!txt)return; let tasks=JSON.parse(localStorage.getItem('tasks')||'{}');
+    let td=todayKey(); tasks[td]=tasks[td]||[]; tasks[td].push({text:txt,done:false});
+    localStorage.setItem('tasks', JSON.stringify(tasks)); ti.value=''; loadTasks();
   }
-  return [max];
-}
-
-// ========= Chart.js ==========
-let barChart;
-function renderCharts(log) {
-  const ctx = document.getElementById('studyChart').getContext('2d');
-  const labels = [];
-  const data = [];
-
-  for (let i = 6; i >= 0; i--) {
-    const d = getDateKey(-i);
-    labels.push(d.slice(5));
-    const total = (log[d] || []).reduce((sum, s) => sum + s.duration, 0);
-    data.push(total);
+  document.getElementById('refreshTasksBtn').onclick = ()=>localStorage.removeItem('tasks') & loadTasks();
+  function updateTaskProgress(todayTasks){
+    let done = todayTasks.filter(t=>t.done).length;
+    let percent = todayTasks.length? Math.round(done/todayTasks.length*100):0;
+    document.getElementById('taskProgress').value = percent;
   }
-
-  if (barChart) barChart.destroy();
-  barChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Daily Study (min)',
-        data,
-        backgroundColor: '#4fa4f7'
-      }]
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-}
-
-// ========= Talent Analysis ==========
-function generateInsights(log) {
-  const insights = document.getElementById('weeklyInsight');
-  insights.innerHTML = '';
-
-  const allEntries = Object.entries(log).flatMap(([date, sessions]) =>
-    sessions.map(s => ({ date, ...s }))
-  );
-
-  if (allEntries.length < 5) {
-    insights.innerHTML = '<li>Not enough data for insights.</li>';
-    return;
-  }
-
-  const timeMap = {};
-  allEntries.forEach(entry => {
-    const hour = new Date(entry.time).getHours();
-    timeMap[hour] = (timeMap[hour] || 0) + entry.duration;
-  });
-
-  const bestHour = Object.entries(timeMap).sort((a, b) => b[1] - a[1])[0][0];
-  const dayMap = {};
-  allEntries.forEach(e => {
-    const d = new Date(e.date).getDay();
-    dayMap[d] = (dayMap[d] || 0) + e.duration;
-  });
-  const bestDay = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][Object.entries(dayMap).sort((a,b)=>b[1]-a[1])[0][0]];
-
-  const msgList = [
-    `🎯 Best study hour: ${bestHour}:00`,
-    `📅 Most productive day: ${bestDay}`,
-    `⚡️ Average session: ${(allEntries.reduce((s, e) => s + e.duration, 0) / allEntries.length).toFixed(1)} mins`,
-    `💡 Tip: Try studying at ${bestHour}:00 for peak productivity.`,
-    `📌 Stay consistent to beat your longest streak!`
-  ];
-
-  msgList.forEach(msg => {
-    const li = document.createElement('li');
-    li.textContent = msg;
-    insights.appendChild(li);
-  });
-}
-
-// ========= Init ==========
-window.onload = () => {
   loadTasks();
+
+  // Syllabus with subjects
+  function loadSubjects(){
+    let subs=JSON.parse(localStorage.getItem('subjects')||'{}'), cont=document.getElementById('subjectsContainer');
+    cont.innerHTML='';
+    for(let sub in subs){
+      let d=document.createElement('div');d.className='card';
+      d.innerHTML = `<h3>${sub} <button onclick="deleteSubject('${sub}')">X</button></h3>
+        <div>${subs[sub].map((ch,i)=>`
+          <div><b>${ch.name}</b>
+            ${['Lecture','Notes','Questions','Revision'].map((lab,idx)=>
+              `<label><input type="checkbox" onchange="toggleCheck('${sub}',${i},${idx})" ${ch.checks[idx]?'checked':''}>${lab}</label>`
+            ).join('')}<button onclick="deleteChapter('${sub}',${i})">Del</button></div>`
+        ).join('')}
+        <input placeholder="Chapter name" id="ch-${sub}"/><button onclick="addChapter('${sub}')">Add Chapter</button>`;
+      cont.appendChild(d);
+    }
+    let sel=document.getElementById('timerSubject'); sel.innerHTML='<option value="">General</option>';
+    Object.keys(subs).forEach(s=>sel.add(new Option(s,s)));
+  }
+  window.addSubjectBtn = () => {
+    let s=document.getElementById('subjectInput').value.trim(); if(!s)return;
+    let ss=JSON.parse(localStorage.getItem('subjects')||'{}'); ss[s]=ss[s]||[]; localStorage.setItem('subjects',JSON.stringify(ss));
+    document.getElementById('subjectInput').value=''; loadSubjects();
+  };
+  window.addChapter = (sub)=>{
+    let v=document.getElementById(`ch-${sub}`).value.trim(); if(!v)return;
+    let ss=JSON.parse(localStorage.getItem('subjects')||'{}');
+    ss[sub].push({name:v,checks:[false,false,false,false]});
+    localStorage.setItem('subjects',JSON.stringify(ss)); loadSubjects();
+  };
+  window.toggleCheck = (sub,i,idx)=>{
+    let ss=JSON.parse(localStorage.getItem('subjects')||'{}');
+    ss[sub][i].checks[idx]=!ss[sub][i].checks[idx]; localStorage.setItem('subjects',JSON.stringify(ss)); loadSubjects();
+  };
+  window.deleteSubject = (sub)=>{let ss=JSON.parse(localStorage.getItem('subjects')||'{}'); delete ss[sub]; localStorage.setItem('subjects',JSON.stringify(ss)); loadSubjects();}
+  window.deleteChapter = (sub,i)=>{let ss=JSON.parse(localStorage.getItem('subjects')||'{}'); ss[sub].splice(i,1); localStorage.setItem('subjects',JSON.stringify(ss)); loadSubjects();}
+  document.getElementById('addSubjectBtn').onclick = () => window.addSubjectBtn();
   loadSubjects();
-  updateProgress();
-  updateTimerDisplay();
-  loadNotes();
-};
+
+  // Journal & Notes
+  document.getElementById('unlockJournalBtn').onclick = () => {
+    if(document.getElementById('journalPassword').value==='jai bhavani'){
+      document.getElementById('lockSection').style.display='none';
+      document.getElementById('journalSection').style.display='block';
+      document.getElementById('dailyNote').value = localStorage.getItem(`journal-${todayKey()}`) || '';
+    } else alert('Wrong password');
+  };
+  document.getElementById('saveNoteBtn').onclick = () => {
+    localStorage.setItem(`journal-${todayKey()}`, document.getElementById('dailyNote').value);
+    alert('Saved journal');
+  };
+
+  // Pomodoro timer logic
+  let timer, isRunning=false;
+  function format(t){ let m=Math.floor(t/60), s=t%60; return `${m}:${s.toString().padStart(2,'0')}`; }
+  document.getElementById('startTimerBtn').onclick = ()=>{
+    if(isRunning)return; isRunning=true;
+    let work=document.getElementById('workMinutes').value||25;
+    let t=work*60, sub=document.getElementById('timerSubject').value||'General';
+    document.getElementById('timerPreview').innerText = format(t);
+    document.getElementById('timerDisplay').innerText = format(t);
+    timer = setInterval(() => {
+      t--; document.getElementById('timerDisplay').innerText = format(t);
+      document.getElementById('timerPreview').innerText = format(t);
+      if(t<=0){ clearInterval(timer); isRunning=false; logSession(sub, work); updateTaskProgress(); updateProgress(); }
+    },1000);
+  };
+  document.getElementById('resetTimerBtn').onclick = ()=>{ clearInterval(timer); isRunning=false; document.getElementById('timerDisplay').innerText = '00:00'; };
+
+  // Progress / Charts
+  function updateProgress(){
+    let log=JSON.parse(localStorage.getItem('studyLog')||'{}');
+    let list=log[todayKey()]||[];
+    let tot = list.reduce((a,e)=>a+e.duration,0);
+    document.getElementById('weekStats').innerText = `Study Hours: ${(tot/60).toFixed(2)}`;
+  }
+  function logSession(sub,dur){
+    let log=JSON.parse(localStorage.getItem('studyLog')||'{}');
+    let td=todayKey(); log[td]=log[td]||[];
+    log[td].push({subject:sub,duration:dur,time:Date.now()}); localStorage.setItem('studyLog', JSON.stringify(log));
+  }
+  function renderCharts(){
+    const log = JSON.parse(localStorage.getItem('studyLog')||'{}');
+    const labels = [], data = [];
+    for(let i=6;i>=0;i--){ let d = todayKey(-i); labels.push(d.slice(5)); data.push((log[d]||[]).reduce((sm,e)=>sm+e.duration,0)); }
+    new Chart(document.getElementById('studyChart').getContext('2d'), { type:'bar', data:{labels,datasets:[{label:'Min studied',data,backgroundColor:'#4fa4f7'}] }, options:{scales:{y:{beginAtZero:true}}} });
+  }
+  render…
+
+})();
