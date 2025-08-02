@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lakshya - Another day, another struggle, another lesson, another win</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lakshya - Study Planner</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -15,101 +14,92 @@
   </header>
 
   <nav>
-    <button class="tab-btn active" data-tab="dashboard">🏠 Dashboard</button>
-    <button class="tab-btn" data-tab="timer">⏱ Timer</button>
-    <button class="tab-btn" data-tab="tasks">📝 Tasks</button>
-    <button class="tab-btn" data-tab="syllabus">📘 Syllabus</button>
-    <button class="tab-btn" data-tab="notes">📓 Notes</button>
-    <button class="tab-btn" data-tab="progress">📊 Progress</button>
+    <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="timer">Timer</button>
+    <button class="tab-btn" data-tab="tasks">Tasks</button>
+    <button class="tab-btn" data-tab="syllabus">Syllabus</button>
+    <button class="tab-btn" data-tab="notes">Notes</button>
+    <button class="tab-btn" data-tab="progress">Progress</button>
   </nav>
 
   <main>
-    <!-- Dashboard -->
-    <section class="tab-content active" id="dashboard">
-      <div class="card quote-card"><h3 id="motivationalQuote"></h3></div>
-      <div class="card shloka-card"><textarea id="shlokaInput" placeholder="Paste your shloka here..."></textarea></div>
-      <div class="card timer-preview"><h3>Pomodoro Timer</h3><p id="timerPreview">25:00</p></div>
-      <div class="card progress-bar-card"><h3>Today's Tasks</h3><progress id="taskProgress" value="0" max="100"></progress></div>
+    <section id="dashboard" class="tab-content active">
+      <div class="card quote-card"><h3 id="motivationalQuote">Loading...</h3></div>
+      <div class="card shloka-card">
+        <textarea id="shlokaInput" placeholder="Paste today's shloka here..."></textarea>
+        <button id="saveShlokaBtn">Save Shloka</button>
+      </div>
+      <div class="card timer-preview"><h3>Pomodoro Timer Preview</h3><p id="timerPreview">25:00</p></div>
+      <div class="card progress-card">
+        <h3>Today's Tasks</h3>
+        <progress id="taskProgress" value="0" max="100"></progress>
+      </div>
       <div class="card stats-card">
         <h3>This Week Stats</h3>
         <p id="weekStats">Study Hours: 0 / Tasks: 0</p>
       </div>
-      <div class="card goal-panel">
+      <div class="card goals-card">
         <h3>Long-Term Goals</h3>
         <ul>
-          <li>100/100</li>
-          <li>99%+</li>
-          <li>AIR 1 CLAT</li>
-          <li>AIR 1 UPSC</li>
+          <li>100/100</li><li>99%+</li><li>AIR 1 CLAT</li><li>AIR 1 UPSC</li>
         </ul>
       </div>
       <div class="action-buttons">
-        <button onclick="openTaskTab()">Add Task</button>
-        <button onclick="openTimerTab()">Start Timer</button>
-        <button onclick="openNotesTab()">Quick Note</button>
-        <button onclick="openProgressTab()">View Progress</button>
+        <button data-tab="tasks">Add Task</button>
+        <button data-tab="timer">Start Timer</button>
+        <button data-tab="notes">Quick Note</button>
+        <button data-tab="progress">View Progress</button>
       </div>
     </section>
 
-    <!-- Timer -->
-    <section class="tab-content" id="timer">
+    <section id="timer" class="tab-content">
       <h2>Pomodoro Timer</h2>
       <div class="timer-controls">
-        <input type="number" id="workMinutes" value="25" min="1"/> min work
-        <input type="number" id="breakMinutes" value="5" min="1"/> min break
+        <input type="number" id="workMinutes" value="25" min="1" /> min work
+        <input type="number" id="breakMinutes" value="5" min="1" /> min break
         <select id="timerSubject"></select>
-        <button onclick="startPomodoro()">Start</button>
-        <button onclick="resetPomodoro()">Reset</button>
+        <button id="startTimerBtn">Start</button>
+        <button id="resetTimerBtn">Reset</button>
       </div>
       <div id="timerDisplay">25:00</div>
     </section>
 
-    <!-- Tasks -->
-    <section class="tab-content" id="tasks">
+    <section id="tasks" class="tab-content">
       <h2>To-Do List</h2>
-      <input type="text" id="taskInput" placeholder="Add new task..."/>
-      <button onclick="addTask()">Add</button>
-      <button onclick="refreshTasks()">Refresh</button>
+      <input type="text" id="taskInput" placeholder="Add new task..." />
+      <button id="addTaskBtn">Add</button>
+      <button id="refreshTasksBtn">Refresh</button>
       <ul id="taskList"></ul>
     </section>
 
-    <!-- Syllabus -->
-    <section class="tab-content" id="syllabus">
-      <h2>Subject-wise Syllabus</h2>
-      <input type="text" id="subjectInput" placeholder="New Subject"/>
-      <button onclick="addSubject()">Add Subject</button>
+    <section id="syllabus" class="tab-content">
+      <h2>Subject-Wise Syllabus</h2>
+      <input type="text" id="subjectInput" placeholder="New Subject" />
+      <button id="addSubjectBtn">Add Subject</button>
       <div id="subjectsContainer"></div>
     </section>
 
-    <!-- Notes -->
-    <section class="tab-content" id="notes">
-      <h2>Journal (Locked)</h2>
+    <section id="notes" class="tab-content">
+      <h2>Journal & Notes</h2>
       <div id="lockSection">
-        <input type="password" id="journalPassword" placeholder="Enter password"/>
-        <button onclick="unlockJournal()">Unlock</button>
+        <input type="password" id="journalPassword" placeholder="Enter password" />
+        <button id="unlockJournalBtn">Unlock Journal</button>
       </div>
       <div id="journalSection" style="display:none;">
         <textarea id="dailyNote" placeholder="Write your private note here..."></textarea>
-        <button onclick="saveNote()">Save</button>
+        <button id="saveNoteBtn">Save Note</button>
       </div>
     </section>
 
-    <!-- Progress -->
-    <section class="tab-content" id="progress">
+    <section id="progress" class="tab-content">
       <h2>Progress & Analytics</h2>
       <canvas id="studyChart" width="400" height="200"></canvas>
-      <div class="card streaks">
+      <div class="card streaks-card">
         <h3>Study Streak</h3>
         <p>Current: <span id="currentStreak">0</span> days</p>
         <p>Longest: <span id="longestStreak">0</span> days</p>
       </div>
-      <div class="card monthlyGoals">
-        <h3>Monthly Goals</h3>
-        <p>Hours: <span id="goalHours">0/120</span></p>
-        <p>Tasks: <span id="goalTasks">0/100</span></p>
-        <p>Consistency: <span id="goalDays">0/30</span></p>
-      </div>
-      <div class="card insights">
+      <div class="card insights-card">
         <h3>Weekly Insights</h3>
         <ul id="weeklyInsights"></ul>
       </div>
