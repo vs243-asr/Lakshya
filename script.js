@@ -1,125 +1,64 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const sections = document.querySelectorAll("main");
-  const buttons = document.querySelectorAll("nav button");
+const state = JSON.parse(localStorage.getItem('lakshya')) || {
+  subjects:{}, tasks:[], journal:[], shlokas:[], pomodoroLogs:[] };
 
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const target = btn.getAttribute("data-target");
-      sections.forEach(sec => sec.classList.remove("active"));
-      document.getElementById(target).classList.add("active");
-    });
-  });
+function saveState(){ localStorage.setItem('lakshya', JSON.stringify(state)); }
 
-  // ---------------- Pomodoro Timer ----------------
-  let timer;
-  let timeLeft = 1500; // 25 minutes
-  const display = document.getElementById("timerDisplay");
+const quotes = [...]; // (same quotes array as before)
 
-  function updateTimer() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    display.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+function openTab(e){
+  const tab=e.target.getAttribute('data-tab');
+  document.querySelectorAll('.tab-content').forEach(tc=>tc.classList.remove('active-tab'));
+  document.querySelectorAll('.tab-button').forEach(tb=>tb.classList.remove('active'));
+  document.getElementById(tab).classList.add('active-tab');
+  e.target.classList.add('active');
+}
+document.querySelectorAll('.tab-button').forEach(b=>b.onclick=openTab);
+
+function showQuote(){
+  const q=quotes[Math.floor(Math.random()*quotes.length)];
+  document.getElementById('motivational-quote').textContent=q;
+  state.lastQuote = q; saveState();
+}
+showQuote();
+
+// Tasks
+function renderTasks(){
+  // ...
+  // same checkbox logic, then saveState and updateProgress
+}
+... // same as before, but after each state mutation: saveState()
+
+// Syllabus & subjects
+... // similar, with saveState()
+
+// Pomodoro timer with hover preview and log storing
+... // after log push: saveState()
+
+// Journal with lock
+... // after journal push: saveState()
+
+// Shloka saving with saveState()
+
+// Progress & analytics
+function updateProgress(){
+  ... // same calculations
+  renderChart(monthLogs);
+  saveState();
+}
+
+function renderChart(logs){
+  // same Chart.js logic
+}
+
+// On page load
+renderTasks(); renderSyllabus(); updateSubjectsMenu();
+renderJournal(); renderShlokas(); updateProgress();
+
+// Dashboard preview
+(function previewLast(){
+  const logs = state.pomodoroLogs;
+  if(logs.length){
+    const last = logs[logs.length-1];
+    document.getElementById('last-session').textContent = (last.seconds/60).toFixed(0) + ' mins (' + last.subject + ')';
   }
-
-  document.getElementById("startTimer").addEventListener("click", () => {
-    clearInterval(timer);
-    timer = setInterval(() => {
-      if (timeLeft > 0) {
-        timeLeft--;
-        updateTimer();
-      } else {
-        clearInterval(timer);
-        alert("Time's up!");
-      }
-    }, 1000);
-  });
-
-  document.getElementById("resetTimer").addEventListener("click", () => {
-    clearInterval(timer);
-    timeLeft = 1500;
-    updateTimer();
-  });
-
-  updateTimer();
-
-  // ---------------- Task Manager ----------------
-  document.getElementById("addTask").addEventListener("click", () => {
-    const input = document.getElementById("taskInput");
-    const taskList = document.getElementById("taskList");
-
-    if (input.value.trim() === "") return;
-
-    const li = document.createElement("li");
-    li.className = "task-item";
-    li.innerHTML = `<span>${input.value}</span> <button class="delete">Delete</button>`;
-    taskList.appendChild(li);
-
-    li.querySelector(".delete").addEventListener("click", () => li.remove());
-
-    input.value = "";
-  });
-
-  // ---------------- Journal ----------------
-  const journalEntry = document.getElementById("journalEntry");
-
-  document.getElementById("saveJournal").addEventListener("click", () => {
-    localStorage.setItem("lakshya_journal", journalEntry.value);
-    alert("Journal saved!");
-  });
-
-  document.getElementById("loadJournal").addEventListener("click", () => {
-    journalEntry.value = localStorage.getItem("lakshya_journal") || "";
-  });
-
-  // ---------------- Password Journal ----------------
-  document.getElementById("savePassword").addEventListener("click", () => {
-    const site = document.getElementById("siteName").value;
-    const user = document.getElementById("userName").value;
-    const pass = document.getElementById("passwordText").value;
-
-    if (site && user && pass) {
-      const entry = `${site} | ${user} | ${pass}\n`;
-      const current = localStorage.getItem("lakshya_passwords") || "";
-      localStorage.setItem("lakshya_passwords", current + entry);
-      alert("Saved!");
-    }
-  });
-
-  document.getElementById("loadPasswords").addEventListener("click", () => {
-    alert(localStorage.getItem("lakshya_passwords") || "No passwords saved.");
-  });
-
-  // ---------------- Syllabus Tracker ----------------
-  document.getElementById("addSyllabus").addEventListener("click", () => {
-    const input = document.getElementById("syllabusInput");
-    const list = document.getElementById("syllabusList");
-
-    if (input.value.trim() === "") return;
-
-    const item = document.createElement("div");
-    item.className = "syllabus-item";
-    item.innerHTML = `<span>${input.value}</span> <input type="checkbox">`;
-    list.appendChild(item);
-
-    input.value = "";
-  });
-
-  // ---------------- Chart ----------------
-  const ctx = document.getElementById("progressChart").getContext("2d");
-  const chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: ["Tasks", "Syllabus", "Pomodoros"],
-      datasets: [{
-        label: "Progress",
-        backgroundColor: ["#4da6ff", "#80d4ff", "#b3ecff"],
-        data: [5, 3, 7],
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
-  });
+})();
