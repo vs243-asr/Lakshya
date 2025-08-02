@@ -1,84 +1,193 @@
-body {
-  font-family: 'Arial', sans-serif;
-  background: #fff3ed;
+@import url('https://fonts.googleapis.com/css2?family=Janice+Studies&display=swap');
+
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  font-family: 'Janice Studies', cursive;
+}
+
+body {
+  background: linear-gradient(to right, #e6f0ff, #ffffff);
+  color: #003366;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
-  background: #5c536a;
+  background-color: #0059b3;
   color: white;
+  padding: 20px;
   text-align: center;
-  padding: 1rem;
-}
-
-header h1 {
-  font-family: 'Great Vibes', cursive;
-  font-size: 3rem;
-  margin: 0;
-}
-
-#date {
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
+  font-size: 2em;
+  font-weight: bold;
 }
 
 nav {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  background-color: #0073e6;
+  padding: 10px 0;
   flex-wrap: wrap;
-  gap: 10px;
-  background: #e39ca0;
-  padding: 10px;
 }
 
 nav button {
-  font-size: 1rem;
-  padding: 10px 20px;
   background: white;
   border: none;
-  border-radius: 8px;
+  color: #0059b3;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1em;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background 0.3s, transform 0.2s;
 }
 
 nav button:hover {
-  background-color: #f6dedf;
+  background: #cce6ff;
+  transform: scale(1.05);
 }
 
 main {
-  padding: 20px;
-}
-
-.tab {
+  flex: 1;
+  padding: 30px;
   display: none;
+  animation: fadeIn 0.5s ease forwards;
 }
 
-.tab.active {
+main.active {
   display: block;
 }
 
-input, textarea {
-  padding: 8px;
-  margin-top: 10px;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dashboard */
+#dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Pomodoro */
+#pomodoro {
+  text-align: center;
+}
+
+#pomodoro .timer {
+  font-size: 3em;
+  margin: 20px 0;
+}
+
+#pomodoro button {
+  margin: 5px;
+}
+
+/* Task Manager */
+.task-input {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.task-input input {
+  padding: 10px;
+  font-size: 1em;
+  width: 60%;
+  border: 1px solid #0059b3;
+  border-radius: 5px 0 0 5px;
+}
+
+.task-input button {
+  padding: 10px 20px;
+  background-color: #0059b3;
+  color: white;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+}
+
+.task-list {
+  list-style: none;
+  margin-top: 20px;
+}
+
+.task-item {
+  background: #f2f9ff;
+  border-left: 5px solid #0059b3;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Journal */
+#journal textarea {
   width: 100%;
-  max-width: 400px;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-button {
-  margin-top: 10px;
-}
-
-ul {
-  list-style-type: disc;
-  margin-top: 10px;
-}
-
-canvas {
-  background: #fff;
+  height: 200px;
+  padding: 10px;
+  border: 1px solid #0059b3;
   border-radius: 10px;
-  box-shadow: 0 0 10px #ccc;
+  resize: vertical;
+}
+
+/* Password Journal */
+#passwordJournal input,
+#passwordJournal textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #0059b3;
+}
+
+/* Progress */
+#progress canvas {
+  max-width: 100%;
+  margin: 20px auto;
+  display: block;
+}
+
+/* Syllabus Tracker */
+.syllabus-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #e6f0ff;
+  margin-bottom: 10px;
+  border-left: 5px solid #0059b3;
+  border-radius: 5px;
+}
+
+.syllabus-item input[type="checkbox"] {
+  transform: scale(1.5);
+}
+
+/* Analytics */
+.analytics-section {
+  text-align: center;
+  padding: 20px;
+}
+
+/* General button styles */
+button {
+  font-family: 'Janice Studies', cursive;
+}
+
+button:disabled {
+  background: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+}
+
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #0073e6;
+  color: white;
 }
