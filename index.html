@@ -3,64 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lakshya App</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>Lakshya</title>
+  <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Janice+Studies&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
     <h1>Lakshya</h1>
     <nav>
-      <button data-tab="dashboard">Dashboard</button>
-      <button data-tab="tasks">Tasks</button>
-      <button data-tab="pomodoro">Pomodoro</button>
-      <button data-tab="journal">Password Journal</button>
-      <button data-tab="syllabus">Syllabus</button>
-      <button data-tab="progress">Progress</button>
+      <button class="tab-button" data-tab="dashboard">Dashboard</button>
+      <button class="tab-button" data-tab="pomodoro">Pomodoro</button>
+      <button class="tab-button" data-tab="tasks">Tasks</button>
+      <button class="tab-button" data-tab="syllabus">Syllabus</button>
+      <button class="tab-button" data-tab="journal">Journal</button>
+      <button class="tab-button" data-tab="reflection">Reflection</button>
+      <button class="tab-button" data-tab="progress">Progress</button>
     </nav>
   </header>
 
   <main>
-    <section id="dashboard" class="tab active">
-      <h2>Welcome, Vedanjali</h2>
-      <p>Your productivity hub starts here.</p>
+    <section id="dashboard" class="tab-content active">
+      <h2>Welcome Back!</h2>
+      <p>Your daily productivity hub. See what's pending, what's done, and what's next.</p>
     </section>
 
-    <section id="tasks" class="tab">
+    <section id="pomodoro" class="tab-content">
+      <h2>Pomodoro Timer</h2>
+      <div class="timer">
+        <span id="timer-display">25:00</span>
+        <div class="timer-buttons">
+          <button onclick="startTimer()">Start</button>
+          <button onclick="pauseTimer()">Pause</button>
+          <button onclick="resetTimer()">Reset</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="tasks" class="tab-content">
       <h2>Task Manager</h2>
-      <input id="task-input" placeholder="Add a task..." />
-      <button id="add-task">Add</button>
+      <input type="text" id="task-input" placeholder="Add new task..." />
+      <button onclick="addTask()">Add</button>
       <ul id="task-list"></ul>
     </section>
 
-    <section id="pomodoro" class="tab">
-      <h2>Pomodoro Timer</h2>
-      <div id="timer">25:00</div>
-      <button id="start">Start</button>
-      <button id="pause">Pause</button>
-      <button id="reset">Reset</button>
-    </section>
-
-    <section id="journal" class="tab">
-      <h2>Password Journal</h2>
-      <input id="journal-title" placeholder="Title" />
-      <textarea id="journal-content" placeholder="Write here..."></textarea>
-      <button id="save-journal">Save</button>
-      <ul id="journal-entries"></ul>
-    </section>
-
-    <section id="syllabus" class="tab">
+    <section id="syllabus" class="tab-content">
       <h2>Syllabus Tracker</h2>
-      <input id="syllabus-input" placeholder="Add topic..." />
-      <button id="add-topic">Add</button>
+      <input type="text" id="subject-input" placeholder="Subject" />
+      <input type="text" id="topic-input" placeholder="Topic" />
+      <button onclick="addSyllabus()">Add Topic</button>
       <ul id="syllabus-list"></ul>
     </section>
 
-    <section id="progress" class="tab">
-      <h2>Progress & Analytics</h2>
+    <section id="journal" class="tab-content">
+      <h2>Password Journal</h2>
+      <input type="text" id="site-input" placeholder="Site Name" />
+      <input type="text" id="username-input" placeholder="Username" />
+      <input type="password" id="password-input" placeholder="Password" />
+      <button onclick="addPassword()">Save</button>
+      <ul id="password-list"></ul>
+    </section>
+
+    <section id="reflection" class="tab-content">
+      <h2>Daily Reflection</h2>
+      <textarea id="reflection-input" rows="6" placeholder="Write your thoughts here..."></textarea>
+      <button onclick="saveReflection()">Save</button>
+      <div id="reflection-output"></div>
+    </section>
+
+    <section id="progress" class="tab-content">
+      <h2>Progress Analytics</h2>
       <canvas id="progressChart" width="400" height="200"></canvas>
     </section>
   </main>
+
+  <footer>
+    <p>&copy; 2025 Lakshya</p>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
