@@ -1,137 +1,83 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const dateDisplay = document.getElementById("dateDisplay");
-  const tabs = document.querySelectorAll("nav button");
-  const tabContents = document.querySelectorAll(".tab-content");
+// Show date
+document.getElementById("date").textContent = new Date().toDateString();
 
-  // Display today's date
-  dateDisplay.textContent = new Date().toDateString();
+// Tab switching
+function showTab(tabId) {
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+}
+showTab('dashboard'); // default tab
 
-  // Tab navigation
-  tabs.forEach(button => {
-    button.addEventListener("click", () => {
-      tabs.forEach(btn => btn.classList.remove("active"));
-      button.classList.add("active");
+// Timer
+let timerInterval;
+function startTimer() {
+  let minutes = parseInt(document.getElementById("timeInput").value);
+  if (isNaN(minutes) || minutes <= 0) return;
 
-      const target = button.getAttribute("data-target");
-      tabContents.forEach(tab => {
-        tab.classList.remove("active");
-        if (tab.id === target) tab.classList.add("active");
-      });
-    });
-  });
+  let seconds = minutes * 60;
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    let min = Math.floor(seconds / 60);
+    let sec = seconds % 60;
+    document.getElementById("countdown").textContent =
+      `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+    if (--seconds < 0) {
+      clearInterval(timerInterval);
+      alert("Time's up!");
+    }
+  }, 1000);
+}
 
-  // TO-DO List
-  const taskInput = document.getElementById("taskInput");
-  const addTaskBtn = document.getElementById("addTask");
-  const todoList = document.getElementById("todoList");
-
-  addTaskBtn.addEventListener("click", () => {
-    if (taskInput.value.trim() === "") return;
+// Tasks
+function addTask() {
+  const input = document.getElementById("taskInput");
+  const taskText = input.value.trim();
+  if (taskText) {
     const li = document.createElement("li");
-    li.innerHTML = `<span>${taskInput.value}</span>
-      <button onclick="this.parentElement.remove()">❌</button>`;
-    todoList.appendChild(li);
-    taskInput.value = "";
-    saveData("todoList", todoList.innerHTML);
-  });
+    li.textContent = taskText;
+    li.onclick = () => li.remove();
+    document.getElementById("taskList").appendChild(li);
+    input.value = "";
+  }
+}
 
-  // Journal (password-protected)
-  const journalPassword = document.getElementById("journalPassword");
-  const unlockJournal = document.getElementById("unlockJournal");
-  const journalEntry = document.getElementById("journalEntry");
+// Syllabus
+function addSyllabus() {
+  const input = document.getElementById("syllabusInput");
+  const text = input.value.trim();
+  if (text) {
+    const li = document.createElement("li");
+    li.textContent = text;
+    li.onclick = () => li.style.textDecoration = "line-through";
+    document.getElementById("syllabusList").appendChild(li);
+    input.value = "";
+  }
+}
 
-  unlockJournal.addEventListener("click", () => {
-    if (journalPassword.value === "1234") {
-      journalEntry.removeAttribute("disabled");
-    } else {
-      alert("Wrong password");
+// Notes
+function saveNotes() {
+  const text = document.getElementById("noteArea").value;
+  localStorage.setItem("lakshyaNotes", text);
+  alert("Notes saved!");
+}
+document.getElementById("noteArea").value = localStorage.getItem("lakshyaNotes") || "";
+
+// Chart.js Progress Tracker
+const ctx = document.getElementById("progressChart").getContext("2d");
+const progressChart = new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Maths', 'Science', 'English', 'SST', 'Hindi'],
+    datasets: [{
+      label: 'Completion %',
+      data: [70, 50, 60, 40, 80],
+      backgroundColor: ['#f88', '#8cf', '#c8f', '#fc8', '#8f8']
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: { beginAtZero: true, max: 100 }
     }
-  });
-
-  journalEntry.addEventListener("input", () => {
-    saveData("journalEntry", journalEntry.value);
-  });
-
-  // Study Timer
-  let timer;
-  const startTimer = document.getElementById("startTimer");
-  const stopTimer = document.getElementById("stopTimer");
-  const timerDisplay = document.getElementById("timerDisplay");
-
-  startTimer.addEventListener("click", () => {
-    let minutes = parseInt(document.getElementById("studyMinutes").value);
-    if (isNaN(minutes) || minutes <= 0) return;
-    let seconds = minutes * 60;
-
-    clearInterval(timer);
-    timer = setInterval(() => {
-      if (seconds <= 0) {
-        clearInterval(timer);
-        alert("Study session complete!");
-      }
-      let m = Math.floor(seconds / 60);
-      let s = seconds % 60;
-      timerDisplay.textContent = `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-      seconds--;
-    }, 1000);
-  });
-
-  stopTimer.addEventListener("click", () => {
-    clearInterval(timer);
-    timerDisplay.textContent = "00:00";
-  });
-
-  // Subject Tracker
-  const addSubject = document.getElementById("addSubject");
-  const subjectInput = document.getElementById("subjectInput");
-  const subjectsContainer = document.getElementById("subjectsContainer");
-
-  addSubject.addEventListener("click", () => {
-    if (subjectInput.value.trim() === "") return;
-
-    const div = document.createElement("div");
-    div.classList.add("subject");
-    div.innerHTML = `
-      <h4>${subjectInput.value}</h4>
-      <label>Topics: <input type="text" placeholder="Enter topics covered" /></label><br/>
-      <label>Progress: <input type="number" max="100" min="0" placeholder="0-100%" /></label><br/>
-      <button onclick="this.parentElement.remove()">❌ Remove</button>
-    `;
-    subjectsContainer.appendChild(div);
-    subjectInput.value = "";
-    saveData("subjectsContainer", subjectsContainer.innerHTML);
-  });
-
-  // Chart (Dummy data)
-  const ctx = document.getElementById("studyChart").getContext("2d");
-  const studyChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      datasets: [{
-        label: "Hours Studied",
-        data: [1, 2, 1.5, 3, 2.5, 4, 3],
-        backgroundColor: "#ffb4a2"
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: true,
-          max: 6
-        }
-      }
-    }
-  });
-
-  // Journal auto-load
-  journalEntry.value = localStorage.getItem("journalEntry") || "";
-  todoList.innerHTML = localStorage.getItem("todoList") || "";
-  subjectsContainer.innerHTML = localStorage.getItem("subjectsContainer") || "";
-
-  // Data save function
-  function saveData(key, data) {
-    localStorage.setItem(key, data);
   }
 });
