@@ -1,83 +1,125 @@
-// Show date
-document.getElementById("date").textContent = new Date().toDateString();
+document.addEventListener("DOMContentLoaded", function () {
+  const sections = document.querySelectorAll("main");
+  const buttons = document.querySelectorAll("nav button");
 
-// Tab switching
-function showTab(tabId) {
-  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
-}
-showTab('dashboard'); // default tab
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.getAttribute("data-target");
+      sections.forEach(sec => sec.classList.remove("active"));
+      document.getElementById(target).classList.add("active");
+    });
+  });
 
-// Timer
-let timerInterval;
-function startTimer() {
-  let minutes = parseInt(document.getElementById("timeInput").value);
-  if (isNaN(minutes) || minutes <= 0) return;
+  // ---------------- Pomodoro Timer ----------------
+  let timer;
+  let timeLeft = 1500; // 25 minutes
+  const display = document.getElementById("timerDisplay");
 
-  let seconds = minutes * 60;
-  clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    let min = Math.floor(seconds / 60);
-    let sec = seconds % 60;
-    document.getElementById("countdown").textContent =
-      `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-    if (--seconds < 0) {
-      clearInterval(timerInterval);
-      alert("Time's up!");
-    }
-  }, 1000);
-}
+  function updateTimer() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    display.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  }
 
-// Tasks
-function addTask() {
-  const input = document.getElementById("taskInput");
-  const taskText = input.value.trim();
-  if (taskText) {
+  document.getElementById("startTimer").addEventListener("click", () => {
+    clearInterval(timer);
+    timer = setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        updateTimer();
+      } else {
+        clearInterval(timer);
+        alert("Time's up!");
+      }
+    }, 1000);
+  });
+
+  document.getElementById("resetTimer").addEventListener("click", () => {
+    clearInterval(timer);
+    timeLeft = 1500;
+    updateTimer();
+  });
+
+  updateTimer();
+
+  // ---------------- Task Manager ----------------
+  document.getElementById("addTask").addEventListener("click", () => {
+    const input = document.getElementById("taskInput");
+    const taskList = document.getElementById("taskList");
+
+    if (input.value.trim() === "") return;
+
     const li = document.createElement("li");
-    li.textContent = taskText;
-    li.onclick = () => li.remove();
-    document.getElementById("taskList").appendChild(li);
+    li.className = "task-item";
+    li.innerHTML = `<span>${input.value}</span> <button class="delete">Delete</button>`;
+    taskList.appendChild(li);
+
+    li.querySelector(".delete").addEventListener("click", () => li.remove());
+
     input.value = "";
-  }
-}
+  });
 
-// Syllabus
-function addSyllabus() {
-  const input = document.getElementById("syllabusInput");
-  const text = input.value.trim();
-  if (text) {
-    const li = document.createElement("li");
-    li.textContent = text;
-    li.onclick = () => li.style.textDecoration = "line-through";
-    document.getElementById("syllabusList").appendChild(li);
-    input.value = "";
-  }
-}
+  // ---------------- Journal ----------------
+  const journalEntry = document.getElementById("journalEntry");
 
-// Notes
-function saveNotes() {
-  const text = document.getElementById("noteArea").value;
-  localStorage.setItem("lakshyaNotes", text);
-  alert("Notes saved!");
-}
-document.getElementById("noteArea").value = localStorage.getItem("lakshyaNotes") || "";
+  document.getElementById("saveJournal").addEventListener("click", () => {
+    localStorage.setItem("lakshya_journal", journalEntry.value);
+    alert("Journal saved!");
+  });
 
-// Chart.js Progress Tracker
-const ctx = document.getElementById("progressChart").getContext("2d");
-const progressChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['Maths', 'Science', 'English', 'SST', 'Hindi'],
-    datasets: [{
-      label: 'Completion %',
-      data: [70, 50, 60, 40, 80],
-      backgroundColor: ['#f88', '#8cf', '#c8f', '#fc8', '#8f8']
-    }]
-  },
-  options: {
-    responsive: true,
-    scales: {
-      y: { beginAtZero: true, max: 100 }
+  document.getElementById("loadJournal").addEventListener("click", () => {
+    journalEntry.value = localStorage.getItem("lakshya_journal") || "";
+  });
+
+  // ---------------- Password Journal ----------------
+  document.getElementById("savePassword").addEventListener("click", () => {
+    const site = document.getElementById("siteName").value;
+    const user = document.getElementById("userName").value;
+    const pass = document.getElementById("passwordText").value;
+
+    if (site && user && pass) {
+      const entry = `${site} | ${user} | ${pass}\n`;
+      const current = localStorage.getItem("lakshya_passwords") || "";
+      localStorage.setItem("lakshya_passwords", current + entry);
+      alert("Saved!");
     }
-  }
-});
+  });
+
+  document.getElementById("loadPasswords").addEventListener("click", () => {
+    alert(localStorage.getItem("lakshya_passwords") || "No passwords saved.");
+  });
+
+  // ---------------- Syllabus Tracker ----------------
+  document.getElementById("addSyllabus").addEventListener("click", () => {
+    const input = document.getElementById("syllabusInput");
+    const list = document.getElementById("syllabusList");
+
+    if (input.value.trim() === "") return;
+
+    const item = document.createElement("div");
+    item.className = "syllabus-item";
+    item.innerHTML = `<span>${input.value}</span> <input type="checkbox">`;
+    list.appendChild(item);
+
+    input.value = "";
+  });
+
+  // ---------------- Chart ----------------
+  const ctx = document.getElementById("progressChart").getContext("2d");
+  const chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Tasks", "Syllabus", "Pomodoros"],
+      datasets: [{
+        label: "Progress",
+        backgroundColor: ["#4da6ff", "#80d4ff", "#b3ecff"],
+        data: [5, 3, 7],
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
