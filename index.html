@@ -1,182 +1,167 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Lakshya • Aesthetic Study Journal</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- You must host/download the Janice Studies font or use an aesthetic handwritten font from Google Fonts -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lakshya — Study Journal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="lakshya-app">
 
-    <!-- Navigation Tabs -->
-    <nav class="nav-tabs">
-      <button class="tab-link active" data-tab="dashboard">🏠 Dashboard</button>
-      <button class="tab-link" data-tab="timer">⏰ Timer</button>
-      <button class="tab-link" data-tab="tasks">📝 Tasks</button>
-      <button class="tab-link" data-tab="syllabus">📚 Syllabus</button>
-      <button class="tab-link" data-tab="notes">💡 Notes</button>
-      <button class="tab-link" data-tab="progress">📊 Progress</button>
-      <button class="tab-link" data-tab="journal">📖 Journal</button>
-    </nav>
+<nav id="tab-bar">
+  <button class="tab active" data-tab="dashboard">🏠 Dashboard</button>
+  <button class="tab" data-tab="timer">⏰ Timer</button>
+  <button class="tab" data-tab="tasks">✔️ Tasks</button>
+  <button class="tab" data-tab="syllabus">📖 Syllabus</button>
+  <button class="tab" data-tab="notes">📝 Notes</button>
+  <button class="tab" data-tab="progress">📊 Progress</button>
+  <button class="tab" data-tab="journal">🔒 Journal</button>
+</nav>
 
-    <!-- Dashboard Tab -->
-    <section class="tab-section show" id="dashboard">
-      <div class="row">
-        <div class="box blue">
-          <h2 class="handwritten">💬 Motivation</h2>
-          <div id="motivation-quote" class="motivation-quote handwritten"></div>
-        </div>
-        <div class="box white">
-          <h2 class="handwritten">⏳ Pomodoro Timer</h2>
-          <div id="dashboard-pomo-preview"></div>
-        </div>
-        <div class="box blue">
-          <h2 class="handwritten">📆 Today's Tasks</h2>
-          <div id="today-task-progress"></div>
-        </div>
-        <div class="box white">
-          <h2 class="handwritten">📈 This Week's Stats</h2>
-          <div id="week-stats"></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="box blue-long">
-          <h2 class="handwritten">🎯 Long-term Goals</h2>
-          <ul class="goals-list handwritten">
-            <li>Class X Score: 99%+</li>
-            <li>All Subjects: 100/100</li>
-            <li>CLAT Exam: AIR 1</li>
-            <li>UPSC Exam: AIR 1</li>
-            <li>Shloka reading</li>
-          </ul>
-        </div>
-        <div class="box white-long">
-          <h2 class="handwritten">📜 Shloka Today</h2>
-          <textarea id="shloka-section" rows="5" placeholder="Paste or write today's shloka..."></textarea>
-          <button id="save-shloka" class="btn">Save</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Timer Tab -->
-    <section class="tab-section" id="timer">
-      <div class="box blue">
-        <h2 class="handwritten">Pomodoro Settings</h2>
-        <form id="pomo-settings">
-          <label class="handwritten">Subject:
-            <select id="pomo-subject"></select>
-            <button id="add-pomo-subject" type="button" class="btn">+ Add</button>
-          </label>
-          <label class="handwritten">Minutes:
-            <input id="pomo-duration" type="number" min="1" max="90" value="25">
-          </label>
-        </form>
-      </div>
-      <div class="box white">
-        <h2 class="handwritten">⏳ Pomodoro Timer</h2>
-        <div id="pomo-timer" class="handwritten"></div>
-        <button id="pomo-start" class="btn">Start</button>
-        <button id="pomo-pause" class="btn">Pause</button>
-        <button id="pomo-reset" class="btn">Reset</button>
-      </div>
-    </section>
-
-    <!-- Tasks Tab -->
-    <section class="tab-section" id="tasks">
-      <div class="box blue-long">
-        <h2 class="handwritten">To-Do List <button id="refresh-tasks" class="btn">⟲</button></h2>
-        <ul id="todo-list" class="handwritten"></ul>
-        <input type="text" id="new-task" placeholder="New task..." class="handwritten">
-        <button id="add-task" class="btn">Add Task</button>
-      </div>
-    </section>
-
-    <!-- Syllabus Tab -->
-    <section class="tab-section" id="syllabus">
-      <div class="box white-long">
-        <h2 class="handwritten">Syllabus Breakdown</h2>
-        <form id="add-subject-form">
-          <input id="subject-input" type="text" placeholder="Add subject..." class="handwritten">
-          <button class="btn" type="submit">+ Add Subject</button>
-        </form>
-        <div id="syllabus-list"></div>
-      </div>
-    </section>
-
-    <!-- Notes Tab -->
-    <section class="tab-section" id="notes">
-      <div class="box blue-long">
-        <h2 class="handwritten">Ideas & Notes</h2>
-        <div>
-          <input id="notes-date" type="date" class="handwritten">
-          <button id="add-note-btn" class="btn">New Note</button>
-        </div>
-        <div id="notes-list"></div>
-      </div>
-    </section>
-
-    <!-- Progress Tab -->
-    <section class="tab-section" id="progress">
-      <div class="row">
-        <div class="box white">
-          <h2 class="handwritten">Weekly Patterns</h2>
-          <ul id="weekly-patterns" class="handwritten"></ul>
-        </div>
-        <div class="box blue">
-          <h2 class="handwritten">Recommendations</h2>
-          <div id="recommendations" class="handwritten"></div>
-        </div>
-        <div class="box white">
-          <h2 class="handwritten">Study Streak</h2>
-          <ul id="study-streak" class="handwritten"></ul>
-        </div>
-        <div class="box blue">
-          <h2 class="handwritten">Monthly Goals</h2>
-          <form id="monthly-goals-form" class="handwritten">
-            Hours: <input type="number" min="1" id="goal-hours"> 
-            Tasks: <input type="number" min="1" id="goal-tasks">
-            Consistency Days: <input type="number" min="1" id="goal-days">
-            <button class="btn" type="submit">Save</button>
-          </form>
-          <div id="goals-progress"></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="box white-long">
-          <h2 class="handwritten">Progress Analytics</h2>
-          <ul id="progress-analytics" class="handwritten"></ul>
-          <canvas id="study-graph" height="120"></canvas>
-        </div>
-        <div class="box blue-long">
-          <h2 class="handwritten">Subject Progress</h2>
-          <div id="subject-progress"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Journal Tab -->
-    <section class="tab-section" id="journal">
-      <div class="box white-long">
-        <h2 class="handwritten">✏️ Private Journal</h2>
-        <div id="journal-lock" class="handwritten">
-          <input type="password" id="journal-password" placeholder="Enter password...">
-          <button id="unlock-journal" class="btn">Unlock</button>
-          <span id="journal-error"></span>
-        </div>
-        <div id="journal-main" style="display:none;">
-          <input id="journal-date" type="date" class="handwritten">
-          <button id="journal-new-page" class="btn">Open Page</button>
-          <textarea id="journal-text" rows="9" placeholder="Dear Diary..." class="handwritten"></textarea>
-          <button id="save-journal" class="btn">Save Page</button>
-        </div>
-      </div>
-    </section>
-
+<!-- ===== Dashboard ===== -->
+<section id="dashboard" class="tab-content active">
+  <div class="box motivational">
+    <h2>Motivational Quote</h2>
+    <blockquote id="motivational-quote"></blockquote>
   </div>
-  <script src="script.js"></script>
+  <div class="box pomodoro-status">
+    <h2>Timer Status</h2>
+    <div id="pomodoro-preview"></div>
+  </div>
+  <div class="box progress-bar">
+    <h2>Today’s Tasks</h2>
+    <div id="today-tasks-progress">
+      <span id="tasks-completed-count">0</span> / <span id="tasks-total-count">0</span>
+      <div class="bar"><div id="tasks-bar"></div></div>
+    </div>
+  </div>
+  <div class="box weekly-stats">
+    <h2>This Week's Stats</h2>
+    <div>Total Study Hours: <span id="weekly-hours">0</span> / <input type="number" id="weekly-hours-limit" value="35"></div>
+    <div>Tasks Done: <span id="weekly-tasks">0</span> / <input type="number" id="weekly-tasks-limit" value="15"></div>
+  </div>
+  <div class="box long-term-goals">
+    <h2>Long-term Goals Panel</h2>
+    <ul>
+      <li>Class X Score: 99%+</li>
+      <li>All Subjects: 100/100</li>
+      <li>CLAT Exam: AIR 1</li>
+      <li>UPSC Exam: AIR 1</li>
+    </ul>
+  </div>
+  <div class="box shloka">
+    <h2>Shloka Reading Section</h2>
+    <textarea id="shloka-input" placeholder="Paste new shloka/stotra here..."></textarea>
+  </div>
+</section>
+
+<!-- ===== Timer ===== -->
+<section id="timer" class="tab-content">
+  <div class="box">
+    <h2>Advanced Pomodoro Timer</h2>
+    <label>Select Subject:
+      <select id="pomodoro-subjects"></select>
+      <input type="text" id="add-pomodoro-subject" placeholder="Add subject">
+      <button id="add-pomodoro-subject-btn">Add</button>
+    </label><br>
+    <label>Pomodoro Length:
+      <input type="number" id="pomodoro-duration" value="25" min="10" max="120"> minutes
+    </label>
+    <div id="pomodoro-timer">
+      <span id="pomodoro-time">25:00</span>
+    </div>
+    <button id="pomodoro-start">Start</button>
+    <button id="pomodoro-pause">Pause</button>
+    <button id="pomodoro-reset">Reset</button>
+  </div>
+  <div class="box">
+    <h2>Pomodoro Log</h2>
+    <ul id="pomodoro-log"></ul>
+  </div>
+</section>
+
+<!-- ===== Tasks ===== -->
+<section id="tasks" class="tab-content">
+  <div class="box">
+    <h2>To-Do List</h2>
+    <button id="refresh-tasks">🔄 Refresh</button>
+    <ul id="todo-list"></ul>
+    <input type="text" id="new-task" placeholder="Add task...">
+    <button id="add-task">+</button>
+  </div>
+</section>
+
+<!-- ===== Syllabus ===== -->
+<section id="syllabus" class="tab-content">
+  <div class="box">
+    <h2>Subject-wise Syllabus Breakdown</h2>
+    <input type="text" id="new-subject" placeholder="Add subject">
+    <button id="add-subject">Add Subject</button>
+    <div id="subjects-list"></div>
+  </div>
+</section>
+
+<!-- ===== Notes ===== -->
+<section id="notes" class="tab-content">
+  <div class="box">
+    <h2>Save Ideas and Notes (Date wise)</h2>
+    <input type="date" id="note-date">
+    <textarea id="note-input" placeholder="Write your idea or note here..."></textarea>
+    <button id="save-note">Save</button>
+    <div id="notes-list"></div>
+  </div>
+</section>
+
+<!-- ===== Progress ===== -->
+<section id="progress" class="tab-content">
+  <div class="box">
+    <h2>Weekly Pattern Analysis</h2>
+    <div id="weekly-patterns"></div>
+  </div>
+  <div class="box">
+    <h2>Recommendations</h2>
+    <div id="recommendations"></div>
+  </div>
+  <div class="box">
+    <h2>Study Streaks</h2>
+    <div>
+      Current Streak: <span id="current-streak">0</span> days<br>
+      Longest Streak: <span id="longest-streak">0</span> days
+    </div>
+  </div>
+  <div class="box">
+    <h2>Monthly Goals</h2>
+    <label>Study Hours: <input type="number" id="goal-hours" value="120"></label>
+    <label>Tasks Completed: <input type="number" id="goal-tasks" value="100"></label>
+    <label>Consistency (days): <input type="number" id="goal-consistency" value="30"></label>
+    <div id="monthly-progress"></div>
+  </div>
+  <div class="box">
+    <h2>Analytics & Progress</h2>
+    <div id="analytics-summary"></div>
+    <canvas id="daily-hours-graph" width="350" height="100"></canvas>
+    <div id="subject-progress"></div>
+  </div>
+</section>
+
+<!-- ===== Journal ===== -->
+<section id="journal" class="tab-content">
+  <div class="box" id="journal-auth">
+    <h2>Enter Password to Unlock Journal ✍️</h2>
+    <input type="password" id="journal-password" placeholder="Password">
+    <button id="journal-unlock">Unlock</button>
+    <div id="journal-msg"></div>
+  </div>
+  <div class="box" id="journal-entries" style="display:none;">
+    <h2>Personal Journal</h2>
+    <input type="date" id="journal-date">
+    <textarea id="journal-entry" placeholder="Write your private journal..."></textarea>
+    <button id="save-journal-entry">Save Entry</button>
+    <div id="journal-entries-list"></div>
+  </div>
+</section>
+
+<script src="script.js"></script>
 </body>
 </html>
-
