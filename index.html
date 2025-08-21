@@ -2,166 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lakshya — Study Journal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lakshya</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <header>
+    <h1>Lakshya</h1>
+    <nav>
+      <button class="tab-btn active" data-tab="dashboard">🏠 Dashboard</button>
+      <button class="tab-btn" data-tab="timer">⏱️ Timer</button>
+      <button class="tab-btn" data-tab="tasks">📝 Tasks</button>
+      <button class="tab-btn" data-tab="syllabus">📚 Syllabus</button>
+      <button class="tab-btn" data-tab="notes">📖 Notes</button>
+      <button class="tab-btn" data-tab="progress">📊 Progress</button>
+    </nav>
+  </header>
 
-<nav id="tab-bar">
-  <button class="tab active" data-tab="dashboard">🏠 Dashboard</button>
-  <button class="tab" data-tab="timer">⏰ Timer</button>
-  <button class="tab" data-tab="tasks">✔️ Tasks</button>
-  <button class="tab" data-tab="syllabus">📖 Syllabus</button>
-  <button class="tab" data-tab="notes">📝 Notes</button>
-  <button class="tab" data-tab="progress">📊 Progress</button>
-  <button class="tab" data-tab="journal">🔒 Journal</button>
-</nav>
+  <main>
+    <!-- Dashboard -->
+    <section id="dashboard" class="tab-content active">
+      <div class="card">
+        <h2>💡 Motivation</h2>
+        <p id="quote">Loading...</p>
+      </div>
+      <div class="card">
+        <h2>⏱️ Pomodoro Status</h2>
+        <p id="pomodoroStatus">25:00 (Idle)</p>
+      </div>
+      <div class="card">
+        <h2>📌 Today’s Tasks</h2>
+        <progress id="taskProgress" value="0" max="100"></progress>
+      </div>
+      <div class="card">
+        <h2>📊 This Week Stats</h2>
+        <p id="weekStats">0 hrs studied | 0 tasks done</p>
+      </div>
+      <div class="card">
+        <h2>🎯 Long-term Goals</h2>
+        <ul>
+          <li>Class X Score: 99%+</li>
+          <li>All Subjects: 100/100</li>
+          <li>CLAT Exam: AIR 1</li>
+          <li>UPSC Exam: AIR 1</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>🕉️ Daily Shloka</h2>
+        <textarea id="shlokaInput" placeholder="Paste today’s shloka..."></textarea>
+      </div>
+    </section>
 
-<!-- ===== Dashboard ===== -->
-<section id="dashboard" class="tab-content active">
-  <div class="box motivational">
-    <h2>Motivational Quote</h2>
-    <blockquote id="motivational-quote"></blockquote>
-  </div>
-  <div class="box pomodoro-status">
-    <h2>Timer Status</h2>
-    <div id="pomodoro-preview"></div>
-  </div>
-  <div class="box progress-bar">
-    <h2>Today’s Tasks</h2>
-    <div id="today-tasks-progress">
-      <span id="tasks-completed-count">0</span> / <span id="tasks-total-count">0</span>
-      <div class="bar"><div id="tasks-bar"></div></div>
-    </div>
-  </div>
-  <div class="box weekly-stats">
-    <h2>This Week's Stats</h2>
-    <div>Total Study Hours: <span id="weekly-hours">0</span> / <input type="number" id="weekly-hours-limit" value="35"></div>
-    <div>Tasks Done: <span id="weekly-tasks">0</span> / <input type="number" id="weekly-tasks-limit" value="15"></div>
-  </div>
-  <div class="box long-term-goals">
-    <h2>Long-term Goals Panel</h2>
-    <ul>
-      <li>Class X Score: 99%+</li>
-      <li>All Subjects: 100/100</li>
-      <li>CLAT Exam: AIR 1</li>
-      <li>UPSC Exam: AIR 1</li>
-    </ul>
-  </div>
-  <div class="box shloka">
-    <h2>Shloka Reading Section</h2>
-    <textarea id="shloka-input" placeholder="Paste new shloka/stotra here..."></textarea>
-  </div>
-</section>
+    <!-- Timer -->
+    <section id="timer" class="tab-content">
+      <div class="card">
+        <h2>⏱️ Pomodoro Timer</h2>
+        <label>Subject: <input id="pomodoroSubject" placeholder="Enter subject"></label>
+        <label>Minutes: <input id="pomodoroMinutes" type="number" value="25"></label>
+        <h1 id="timerDisplay">25:00</h1>
+        <button id="startTimer">▶ Start</button>
+        <button id="stopTimer">⏹ Stop</button>
+      </div>
+    </section>
 
-<!-- ===== Timer ===== -->
-<section id="timer" class="tab-content">
-  <div class="box">
-    <h2>Advanced Pomodoro Timer</h2>
-    <label>Select Subject:
-      <select id="pomodoro-subjects"></select>
-      <input type="text" id="add-pomodoro-subject" placeholder="Add subject">
-      <button id="add-pomodoro-subject-btn">Add</button>
-    </label><br>
-    <label>Pomodoro Length:
-      <input type="number" id="pomodoro-duration" value="25" min="10" max="120"> minutes
-    </label>
-    <div id="pomodoro-timer">
-      <span id="pomodoro-time">25:00</span>
-    </div>
-    <button id="pomodoro-start">Start</button>
-    <button id="pomodoro-pause">Pause</button>
-    <button id="pomodoro-reset">Reset</button>
-  </div>
-  <div class="box">
-    <h2>Pomodoro Log</h2>
-    <ul id="pomodoro-log"></ul>
-  </div>
-</section>
+    <!-- Tasks -->
+    <section id="tasks" class="tab-content">
+      <div class="card">
+        <h2>📝 To-Do List</h2>
+        <input id="newTaskInput" placeholder="New Task">
+        <button id="addTaskBtn">Add</button>
+        <ul id="taskList"></ul>
+        <button id="refreshTasks">🔄 Refresh</button>
+      </div>
+    </section>
 
-<!-- ===== Tasks ===== -->
-<section id="tasks" class="tab-content">
-  <div class="box">
-    <h2>To-Do List</h2>
-    <button id="refresh-tasks">🔄 Refresh</button>
-    <ul id="todo-list"></ul>
-    <input type="text" id="new-task" placeholder="Add task...">
-    <button id="add-task">+</button>
-  </div>
-</section>
+    <!-- Syllabus -->
+    <section id="syllabus" class="tab-content">
+      <div class="card">
+        <h2>📚 Syllabus</h2>
+        <input id="newSubjectInput" placeholder="New Subject">
+        <button id="addSubjectBtn">Add Subject</button>
+        <div id="subjectsContainer"></div>
+      </div>
+    </section>
 
-<!-- ===== Syllabus ===== -->
-<section id="syllabus" class="tab-content">
-  <div class="box">
-    <h2>Subject-wise Syllabus Breakdown</h2>
-    <input type="text" id="new-subject" placeholder="Add subject">
-    <button id="add-subject">Add Subject</button>
-    <div id="subjects-list"></div>
-  </div>
-</section>
+    <!-- Notes -->
+    <section id="notes" class="tab-content">
+      <div class="card">
+        <h2>🔒 Journal (Password Protected)</h2>
+        <input type="password" id="journalPassword" placeholder="Enter password">
+        <button id="unlockJournal">Unlock</button>
+        <div id="journalSection" style="display:none;">
+          <textarea id="journalEntry" placeholder="Write your thoughts..."></textarea>
+          <button id="saveJournal">Save</button>
+          <div id="journalEntries"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>💡 Save Ideas & Notes</h2>
+        <textarea id="ideaInput" placeholder="Write idea..."></textarea>
+        <button id="saveIdea">Save</button>
+        <div id="ideasList"></div>
+      </div>
+    </section>
 
-<!-- ===== Notes ===== -->
-<section id="notes" class="tab-content">
-  <div class="box">
-    <h2>Save Ideas and Notes (Date wise)</h2>
-    <input type="date" id="note-date">
-    <textarea id="note-input" placeholder="Write your idea or note here..."></textarea>
-    <button id="save-note">Save</button>
-    <div id="notes-list"></div>
-  </div>
-</section>
+    <!-- Progress -->
+    <section id="progress" class="tab-content">
+      <div class="card">
+        <h2>📊 Study Analytics</h2>
+        <canvas id="studyChart"></canvas>
+      </div>
+      <div class="card">
+        <h2>📚 Subject Progress</h2>
+        <canvas id="subjectChart"></canvas>
+      </div>
+      <div class="card">
+        <h2>🔥 Study Streak</h2>
+        <p id="streakInfo">Current: 0 | Longest: 0</p>
+      </div>
+    </section>
+  </main>
 
-<!-- ===== Progress ===== -->
-<section id="progress" class="tab-content">
-  <div class="box">
-    <h2>Weekly Pattern Analysis</h2>
-    <div id="weekly-patterns"></div>
-  </div>
-  <div class="box">
-    <h2>Recommendations</h2>
-    <div id="recommendations"></div>
-  </div>
-  <div class="box">
-    <h2>Study Streaks</h2>
-    <div>
-      Current Streak: <span id="current-streak">0</span> days<br>
-      Longest Streak: <span id="longest-streak">0</span> days
-    </div>
-  </div>
-  <div class="box">
-    <h2>Monthly Goals</h2>
-    <label>Study Hours: <input type="number" id="goal-hours" value="120"></label>
-    <label>Tasks Completed: <input type="number" id="goal-tasks" value="100"></label>
-    <label>Consistency (days): <input type="number" id="goal-consistency" value="30"></label>
-    <div id="monthly-progress"></div>
-  </div>
-  <div class="box">
-    <h2>Analytics & Progress</h2>
-    <div id="analytics-summary"></div>
-    <canvas id="daily-hours-graph" width="350" height="100"></canvas>
-    <div id="subject-progress"></div>
-  </div>
-</section>
-
-<!-- ===== Journal ===== -->
-<section id="journal" class="tab-content">
-  <div class="box" id="journal-auth">
-    <h2>Enter Password to Unlock Journal ✍️</h2>
-    <input type="password" id="journal-password" placeholder="Password">
-    <button id="journal-unlock">Unlock</button>
-    <div id="journal-msg"></div>
-  </div>
-  <div class="box" id="journal-entries" style="display:none;">
-    <h2>Personal Journal</h2>
-    <input type="date" id="journal-date">
-    <textarea id="journal-entry" placeholder="Write your private journal..."></textarea>
-    <button id="save-journal-entry">Save Entry</button>
-    <div id="journal-entries-list"></div>
-  </div>
-</section>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
